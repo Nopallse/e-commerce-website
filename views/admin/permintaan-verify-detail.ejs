@@ -1,0 +1,383 @@
+<%- include("../layout/sidebar.ejs") %>
+
+    <!-- Content -->
+    <div class="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
+        <!-- your content goes here ... -->
+
+        <!-- Card Section -->
+        <div class="max-w-4xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+            <form id="permintaanForm" method="POST" action="/admin/update-permintaan">
+                <!-- Card -->
+                <div class="bg-white rounded-xl shadow">
+                    <div class="relative h-20 rounded-t-xl bg-no-repeat bg-cover bg-center"
+                        style="background-color: #388E3C;">
+                        <div class="text-center">
+                            <br>
+                            <h2 class="text-2xl md:text-3xl font-bold text-white">
+                                Formulir Permintaan Surat Keterangan Aktif Kuliah
+                            </h2>
+                            <br>
+                        </div>
+                    </div>
+
+                    <div class="pt-0 p-4 sm:pt-0 sm:p-7">
+                        <!-- Grid -->
+                        <div class="space-y-4 sm:space-y-6">
+                            <div class="mb-8">
+                                <h2 class="text-xl font-bold text-gray-800">
+                                    <br>
+                                    Status: <%= permintaan.status %>
+                                        <input type="hidden" name="idPermintaan" value="<%= permintaan.idPermintaan %>">
+                                </h2>
+                            </div>
+                            <div class="space-y-2" id="nama">
+                                <label for="inputName" class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                    NAMA LENGKAP MAHASISWA/I
+                                </label>
+                                <input id="inputName" name="inputName" type="text"
+                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                    disabled value="<%= permintaan.mahasiswa.name %>">
+                            </div>
+                            <div class="space-y-2" id="nim">
+                                <label for="inputNim" class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                    NOMOR INDUK MAHASISWA (NIM)
+                                </label>
+                                <input id="inputNim" name="inputNim" type="text"
+                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                    disabled value="<%= permintaan.nim %>">
+                            </div>
+                            <div class="space-y-2" id="departemen">
+                                <label for="inputDepartemen"
+                                    class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                    DEPARTEMEN
+                                </label>
+                                <input id="inputDepartemen" name="inputDepartemen" type="text"
+                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                    disabled value="<%= permintaan.mahasiswa.departemen %>">
+                            </div>
+                            <div class="space-y-2">
+                                <label for="inputTarget" class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                    Target permintaan surat
+                                </label>
+                                <select id="inputTarget" name="inputTarget"
+                                    class="py-2 px-3 pe-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="default" selected>
+                                        <%= permintaan.target %>
+                                    </option>
+                                    <% if (permintaan.target !=='Pribadi' ) { %>
+                                        <option value="Pribadi">Pribadi</option>
+                                        <% } %>
+                                            <% if (permintaan.target !=='Orang tua' ) { %>
+                                                <option value="Orang tua">Orang tua</option>
+                                                <% } %>
+                                </select>
+                                <div class="space-y-2">
+                                    <label for="inputTujuan"
+                                        class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                        Tujuan permintaan surat
+                                    </label>
+                                    <select id="inputTujuan" name="inputTujuan"
+                                        class="py-2 px-3 pe-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500">
+                                        <option value="<%= permintaan.tujuan %>" selected>
+                                            <%= permintaan.tujuan %>
+                                        </option>
+                                    </select>
+                                </div>
+                                <div <% if(permintaan.target=='Pribadi' ){ %>
+                                    style="display:none;"
+                                    <% } %>
+                                        >
+                                        <div class="space-y-2">
+                                            <label for="inputTujuan"
+                                                class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                                Tujuan permintaan surat
+                                            </label>
+                                            <select id="inputTujuan" name="inputTujuan"
+                                                class="py-2 px-3 pe-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500">
+                                                <option value="<%= permintaan.tujuan %>" selected>
+                                                    <%= permintaan.tujuan %>
+                                                </option>
+                                                <option value="Tunjangan orang tua">Tunjangan orang tua</option>
+                                                <option value="Taspen">Taspen</option>
+                                                <option value="BPJS">BPJS</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <div class="space-y-2" id="nama-orang-tua">
+                                                <label for="inputOrtu"
+                                                    class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                                    NAMA ORANG TUA
+                                                </label>
+                                                <input id="inputOrtu" name="inputOrtu" type="text"
+                                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg focus:border-blue-500 focus:ring-blue-500"
+                                                    value="<%= permintaan.namaOrangtua %>">
+                                            </div>
+                                            <div class="space-y-2" id="nip">
+                                                <label for="inputNip"
+                                                    class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                                    NIP
+                                                </label>
+                                                <input id="inputNip" name="inputNip" type="text"
+                                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg focus:border-blue-500 focus:ring-blue-500"
+                                                    value="<%= permintaan.nip %>">
+                                            </div>
+                                            <div class="space-y-2" id="pangkat-golongan">
+                                                <label for="inputPangkat"
+                                                    class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                                    PANGKAT DAN GOLONGAN
+                                                </label>
+                                                <input id="inputPangkat" name="inputPangkat" type="text"
+                                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg focus:border-blue-500 focus:ring-blue-500"
+                                                    value="<%= permintaan.pangkatGolongan %>">
+                                            </div>
+                                            <div class="space-y-2" id="unit-kerja">
+                                                <label for="inputUnit"
+                                                    class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                                    UNIT KERJA
+                                                </label>
+                                                <input id="inputUnit" name="inputUnit" type="text"
+                                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg focus:border-blue-500 focus:ring-blue-500"
+                                                    value="<%= permintaan.unitKerja %>">
+                                            </div>
+                                            <div class="space-y-2" id="instansi-induk">
+                                                <label for="inputInstansi"
+                                                    class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                                    INSTANSI INDUK
+                                                </label>
+                                                <input id="inputInstansi" name="inputInstansi" type="text"
+                                                    class="py-2 px-3 pe-11 block w-full border-gray-200 shadow-sm rounded-lg focus:border-blue-500 focus:ring-blue-500"
+                                                    value="<%= permintaan.instansiInduk %>">
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="space-y-2" id="file">
+                                    <label for="inputFile"
+                                        class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                        Surat Keterangan Aktif Kuliah
+                                    </label>
+                                    <div class="mt-2">
+                                        <a class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none"
+                                            href="/data/surat/Surat Keterangan Aktif (<%= nomorSurat %>).pdf" target="_blank"
+                                            class="text-blue-600 hover:text-blue-800 underline">
+                                            Download Surat
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Grid -->
+                            <label for="inputFile" class="inline-block text-sm font-medium text-gray-800 mt-2.5">
+                                Status Permintaan
+                            </label>
+                            <select id="status" name="status"
+                                class="py-2 px-3 pe-9 block w-full border-gray-200 shadow-sm rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500">
+                                <option value="Proses" <%=permintaan.status==='Proses' ? 'selected' : '' %>>Proses
+                                </option>
+                                <option value="Ditolak" <%=permintaan.status==='Ditolak' ? 'selected' : '' %>>Ditolak
+                                </option>
+                                <option value="Diajukan" <%=permintaan.status==='Diajukan' ? 'selected' : '' %>>Diajukan
+                                </option>
+                            </select>
+                            <button type="submit" id="ubahStatusButton"
+                                class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                                Update Perubahan
+                            </button>
+            </form>
+
+            <form id="permintaanForm" method="POST" action="/admin/process-form" enctype="multipart/form-data">
+                <input type="hidden" name="idPermintaan" value="<%= permintaan.idPermintaan %>">
+                <div class="space-y-4" id="file">
+                    <label for="af-submit-app-upload-images"
+                        class="inline-block text-sm font-medium text-gray-800 ">
+                        UPLOAD SURAT YANG SUDAH DI TANDA TANGAN
+                    </label>
+
+                    <div
+                        class="relative group block p-4 sm:p-7 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer transition duration-150 ease-in-out hover:border-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 ">
+                        <input id="af-submit-app-upload-images" name="berkas" type="file"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                            onchange="updateFileName()">
+                        <div id="file-upload-icon"
+                            class="flex flex-col items-center justify-center h-full text-gray-400 ">
+                            <svg class="h-10 w-10 mx-auto" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 16 16" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2z" />
+                                <path
+                                    d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383zm.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
+                            </svg>
+                            <span id="default-text" class="mt-2 block text-sm text-gray-800 ">
+                                Browse your device or <span
+                                    class="text-blue-600 group-hover:text-blue-700">drag 'n drop'</span>
+                            </span>
+                            <span id="file-name"
+                                class="hidden mt-2 block text-sm text-gray-800 "></span>
+                            <span class="mt-1 block text-xs text-gray-500 dark:text-neutral-500">
+                                Maximum file size is 2 MB
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 flex justify-center gap-x-2">
+                    <% if(permintaan.status=="Proses" ) { %>
+
+                        <button type="submit" id="submitButton"
+                            class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-green-600 text-white hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
+                            Terbitkan Surat
+                        </button>
+                        <% } %>
+                </div>
+            </form>
+
+            <div id="loadingIndicator" class="hidden">
+                <svg class="animate-spin h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8c0 .76 2.33 1.34 3.54 1.84m2.07.66a8 8 0 011.84 3.54M4.47 16.31a8 8 0 013.54-1.84m2.07-.66a8 8 0 018 8v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <!-- End Card -->
+    </form>
+    </div>
+    <!-- End Card Section -->
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const updateForm = document.getElementById('permintaanForm');
+            const processForm = document.getElementById('processForm');
+            const submitButton = document.getElementById('submitButton');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+
+            updateForm.addEventListener('submit', async function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const formData = new FormData(updateForm);
+                const formObject = Object.fromEntries(formData.entries());
+
+                try {
+                    // Show loading indicator
+                    loadingIndicator.classList.remove('hidden');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    const response = await fetch(updateForm.action, {
+                        method: updateForm.method,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formObject)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: result.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = '/admin/surat';
+
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: result.message
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi kesalahan',
+                        text: error
+                    });
+                } finally {
+                    // Hide loading indicator
+                    loadingIndicator.classList.add('hidden');
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
+                }
+            });
+
+            processForm.addEventListener('submit', async function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const formData = new FormData(processForm);
+                const formObject = Object.fromEntries(formData.entries());
+
+                try {
+                    // Show loading indicator
+                    loadingIndicator.classList.remove('hidden');
+                    if (submitButton) {
+                        submitButton.disabled = true;
+                    }
+
+                    const response = await fetch(processForm.action, {
+                        method: processForm.method,
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formObject)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: result.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = '/admin/surat';
+
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: result.message
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi kesalahan',
+                        text: 'Silakan coba lagi nanti.'
+                    });
+                } finally {
+                    // Hide loading indicator
+                    loadingIndicator.classList.add('hidden');
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
+                }
+            });
+        });
+        function updateFileName() {
+                const fileInput = document.getElementById('af-submit-app-upload-images');
+                const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : '';
+                const fileNameElement = document.getElementById('file-name');
+                const defaultText = document.getElementById('default-text');
+
+                if (fileName) {
+                    fileNameElement.textContent = fileName;
+                    fileNameElement.classList.remove('hidden');
+                    defaultText.classList.add('hidden');
+                } else {
+                    fileNameElement.classList.add('hidden');
+                    defaultText.classList.remove('hidden');
+                }
+            }
+
+    </script>
+    <%- include("../layout/notifikasi.ejs") %>

@@ -1,0 +1,228 @@
+<%- include("../layout/sidebar.ejs") %>
+
+
+
+  <!-- Content -->
+  <div class="w-full h-full px-4 sm:px-6 md:px-8 lg:ps-72 dark:bg-gray-800">
+    <!-- your content goes here ... -->
+    <!-- Card Section -->
+    <div class="max-w-[85rem] px-4 py-4  sm:px-6 lg:px-8 mx-auto">
+      <!-- Card -->
+      <div class="flex flex-col">
+        <div class="-m-1.5 overflow-x-auto">
+          <div class="p-1.5 min-w-full inline-block align-middle">
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+              <!-- Header -->
+              <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200">
+                <div>
+                  <h2 class="text-xl font-semibold text-gray-800">
+                    Permintaan yang sudah di verifikasi
+                  </h2>
+                  <p class="text-sm text-gray-600">
+                    Surat Keterangan Aktif Kuliah
+                  </p>
+                </div>
+              </div>
+              <!-- End Header -->
+
+              <!-- Table -->
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-start">
+                      <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          No Surat
+                        </span>
+                      </div>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                      <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          Nama Mahasiswa
+                        </span>
+                      </div>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                      <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          NIM
+                        </span>
+                      </div>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                      <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          Tujuan
+                        </span>
+                      </div>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                      <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          DITERBITKAN
+                        </span>
+                      </div>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                      <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          BERLAKU HINGGA
+                        </span>
+                      </div>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                      <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-gray-800">
+                          Action
+                        </span>
+                      </div>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <% let count = 0; %>
+                  <% surat.forEach((item, index) => { %>
+                    <% count++; %>
+                      <tr class="bg-white hover:bg-gray-50">
+                        <td class="size-px whitespace-nowrap">
+                          <button type="button" class="block" data-hs-overlay="#hs-ai-invoice-modal">
+                            <span class="block px-6 py-2">
+                              <span class="font-mono text-sm text-blue-600">
+                                <%= (currentPage - 1) * 10 + index + 1 %>
+                              </span>
+                            </span>
+                          </button>
+                        </td>
+
+                        <td class="size-px whitespace-nowrap">
+                          <button type="button" class="block" data-hs-overlay="#hs-ai-invoice-modal">
+                            <span class="block px-6 py-2">
+                              <span class="text-sm text-gray-600">
+                                <%= item.permintaan.mahasiswa.name %>
+                              </span>
+                            </span>
+                          </button>
+                        </td>
+                        <td class="size-px whitespace-nowrap">
+                          <button type="button" class="block" data-hs-overlay="#hs-ai-invoice-modal">
+                            <span class="block px-6 py-2">
+                              <span class="text-sm text-gray-600">
+                                <%=  item.permintaan.mahasiswa.nim %>
+                              </span>
+                            </span>
+                          </button>
+                        </td>
+                        <td class="size-px whitespace-nowrap">
+                          <button type="button" class="block" data-hs-overlay="#hs-ai-invoice-modal">
+                            <span class="block px-6 py-2">
+                              <span class="text-sm text-gray-600">
+                                <%=  item.permintaan.tujuan %>
+                              </span>
+                            </span>
+                          </button>
+                        </td>
+                        <td class="size-px whitespace-nowrap">
+                          <button type="button" class="block" data-hs-overlay="#hs-ai-invoice-modal">
+                            <span class="block px-6 py-2">
+                              <span class="text-sm text-gray-600">
+                                <%= item.tanggal_terbit %>
+                              </span>
+                            </span>
+                          </button>
+                        </td>
+                        <td class="size-px whitespace-nowrap">
+                          <button type="button" class="block" data-hs-overlay="#hs-ai-invoice-modal">
+                            <span class="block px-6 py-2">
+                              <span class="text-sm text-gray-600">
+                                <%= item.valid_until %>
+
+                              </span>
+                            </span>
+                          </button>
+                        </td>
+                        <td class="size-px whitespace-nowrap">
+                          <a href="/admin/surat/<%= item.nomorSurat %>"
+                            class="px-6 py-1.5 inline-flex justify-center items-center gap-2 rounded-lg border font-medium bg-blue-600 text-white shadow-sm align-middle hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm">
+                            <svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                              fill="currentColor" viewBox="0 0 16 16">
+                              <path
+                                d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z" />
+                              <path
+                                d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" />
+                            </svg>
+                            Preview
+                          </a>
+                        </td>
+                      </tr>
+                        <% }); %>
+                </tbody>
+              </table>
+              <!-- End Table -->
+
+              <!-- Footer -->
+              <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200">
+                <div>
+                  <p class="text-sm text-gray-600">
+                    <span class="font-semibold text-gray-800">
+                      <%= count %>
+                    </span> results
+                  </p>
+                </div>
+
+
+                <div>
+                  <div class="inline-flex gap-x-2">
+                    <% if (currentPage > 1) { %>
+                      <a href="/admin/surat?page=<%= currentPage - 1 %>"
+                        class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+                        <svg class="size-3" width="16" height="16" viewBox="0 0 16 15" fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M10.506 1.64001L4.85953 7.28646C4.66427 7.48172 4.66427 7.79831 4.85953 7.99357L10.506 13.64"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        Prev
+                      </a>
+                    <% } %>
+  
+                    <% if (currentPage < totalPages) { %>
+                      <a href="/admin/surat?page=<%= currentPage + 1 %>"
+                        class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+                        Next
+                        <svg class="size-3" width="16" height="16" viewBox="0 0 16 16" fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path d="M4.50598 2L10.1524 7.64645C10.3477 7.84171 10.3477 8.15829 10.1524 8.35355L4.50598 14"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                      </a>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+              <!-- End Footer -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Card -->
+    </div>
+    <!-- End Table Section -->
+
+
+
+    <!-- End Card Section -->
+  </div>
+  <!-- End Content -->
+  <!-- ========== END MAIN CONTENT ========== -->
+
+
+
+  <%- include("../layout/notifikasi.ejs") %>

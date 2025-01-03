@@ -1,0 +1,34 @@
+GET http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNzE1MzA2ODA2LCJleHAiOjE3MTUzMDY5MjZ9.9Nqmw7D407pGMNk0tbuSaWL7hzkofZV7fzGbY8ZlZhY
+
+
+
+###
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name": "naufal",
+    "email": "2211522020_naufal@student.unand.ac.id",
+    "password": "naufal"
+
+}
+
+###
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "email": "admin@gmail.com",
+    "password": "admin"
+}
+
+###
+GET  http://localhost:3000/token
+
+
+
+
+###
+DELETE   http://localhost:3000/logout
+
