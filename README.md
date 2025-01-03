@@ -1,62 +1,37 @@
-# Academic Enrollment Letter Request System with QR Code Verification
+# Kilangan Tebu Uni Des
 
-This web-based application is designed to streamline the process of requesting an official academic enrollment letter, commonly used by students for administrative purposes. The system integrates QR code verification, allowing administrators and external parties to verify the authenticity of the issued letters.
+A simple e-commerce platform for selling local specialties from **Puncak Lawang**, such as **Saka Lawang** and various other traditional souvenirs. This project aims to make it easier for customers to purchase local products through a digital platform.
 
-## Live Demo
+---
 
-The application is live and can be accessed at:
-**[aktifkuliah.techfuture.my.id](https://aktifkuliah.techfuture.my.id/)**
+## Key Features
+- **Product Display**: Browse through a comprehensive list of products with images, descriptions, and prices.
+- **Shopping Cart**: Add, remove, and update items in the shopping cart.
+- **Payment Options**: Integration with local payment gateways for seamless transactions.
+- **User Authentication**: Login, registration, and logout for both customers and admins.
+- **Admin Dashboard**: Manage products, stock, and orders.
 
-## Features
-
-- **User Authentication**: Secure login for students, administrators, and external users.
-- **Enrollment Letter Request**: Students can submit requests for academic enrollment letters with a user-friendly interface.
-- **Generate PDF Letters**: Automatically generate letters based on the data of the student who submitted the request.
-- **QR Code Generation**: Automatically generates a unique QR code for each issued letter, ensuring authenticity.
-- **QR Code Verification**: External parties and administrators can scan the QR code to verify the letter.
-- **Letter Management**: Administrators can approve or reject requests and manage all letters issued.
-- **Responsive Design**: Accessible from both desktop and mobile devices.
+---
 
 ## Tech Stack
 
-- **Frontend**: HTML, Preline CSS, JavaScript
-- **Backend**: Node.js, Express.js
-- **Database**: MySQL (or any other relational database)
-- **QR Code Library**: QRCode.js
-- **Authentication**: JWT (JSON Web Token)
-- **Cloud Hosting**: Alibaba Cloud Virtual Machine (CentOS)
+### Frontend
+- **HTML/CSS/JavaScript**: For static and interactive content.
+
+### Backend
+- **Node.js** with **Express.js**: For REST API development.
+- **JWT**: For user authentication.
+- **Multer**: For handling product image uploads.
+
+### Database
+- **MySQL** or **MongoDB**: To store product, user, and order data.
 
 
-## Usage
+---
 
-- **Access the login page and sign in as a student or administrator.
-- **Students can request an academic enrollment letter by filling out a form.
-- **Once the letter is approved, a QR code is generated and embedded in the letter.
-- **Administrators can view, approve, or reject the requests.
-- **External users can verify the letter by scanning the QR code, which will direct them to a verification page.
+## Installation Guide
 
-## Screenshots
-
-### 1. **Login**
-![Login Screenshot](screenshots/login.jpg)
-
-### 2. **Homepage**
-![Home Screenshot](screenshots/home.jpg)
-
-### 3. **Dashboard**
-![Dashboard Screenshot](screenshots/dashboard.jpg)
-
-### 4. **Layanan**
-![Layanan Screenshot](screenshots/layanan.jpg)
-
-### 5. **Layanan Form**
-![Layanan Form Screenshot](screenshots/layanan_form.jpg)
-
-### 6. **Riwayat**
-![Riwayat Screenshot](screenshots/riwayat.jpg)
-
-### 7. **Riwayat Detail**
-![Riwayat Detail Screenshot](screenshots/riwayat_detail.jpg)
-
-### 8. **Surat**
-![Surat Screenshot](screenshots/surat.jpg)
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/username/kilangan-tebu-uni-des.git
+   cd kilangan-tebu-uni-des
