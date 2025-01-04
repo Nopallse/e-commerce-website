@@ -30,13 +30,19 @@
                 <li><a class="hover:text-red-500 transition" href="/product">PRODUCT</a></li>
                 <% if (isLoggedIn) { %>
                 <li><span class="text-gray-700"><%= user.fullName %></span></li>
+                <li>
+                    <a href="/my-account" class="relative" title="Profile">
+                        <svg class="hover:text-red-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-round"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
+                    </a>
+                </li>
                 <li><a href="/cart" class="relative">
                     <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                     <span class="absolute -top-2 -right-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">0</span>
                 </a></li>
-                <li><a class="hover:text-red-500 transition" href="/auth/logout">LOGOUT</a></li>
+                
+                
                 <% } else { %>
                 <li><a class="hover:text-red-500 transition" href="/register">REGISTER</a></li>
                 <li><a class="hover:text-red-500 transition" href="/login">LOGIN</a></li>
