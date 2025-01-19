@@ -1,6 +1,5 @@
 <%- include('../layout/header') %>
 
-
     <!-- Order Confirmation Section -->
     <section class="max-w-4xl mx-auto px-6 py-12">
         <div class="bg-white rounded-lg shadow-lg p-8">
@@ -13,49 +12,139 @@
                 <% cartItems.forEach(function(item) { %>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <img src="<%= item.Product.image %>" alt="<%= item.Product.name %>" class="w-16 h-16 object-cover rounded">
+                            <img src="<%= item.Product.image %>" alt="<%= item.Product.name %>"
+                                class="w-16 h-16 object-cover rounded">
                             <div class="ml-4">
-                                <h4 class="font-semibold"><%= item.Product.name %></h4>
-                                <p class="text-gray-600">Quantity: <%= item.quantity %></p>
+                                <h4 class="font-semibold">
+                                    <%= item.Product.name %>
+                                </h4>
+                                <p class="text-gray-600">Quantity: <%= item.quantity %>
+                                </p>
                             </div>
                         </div>
                         <span class="font-semibold">Rp <%= item.Product.price * item.quantity %></span>
                     </div>
-                <% }); %>
+                    <% }); %>
             </div>
 
             <!-- Shipping Address -->
             <div class="my-6">
                 <h3 class="text-lg font-semibold mb-2">Shipping Address</h3>
-                <p class="text-gray-600"><%= user.address || 'No address provided' %></p>
-                <a href="/profile/edit-address" class="text-red-500 hover:text-red-600">Change Address</a>
+                <p class="text-gray-600">
+                    <%=`${user.addressDetail}, ${user.village}, ${user.district}, ${user.city}, ${user.province},
+                        ${user.postalCode}` || 'No address provided' %>
+                </p>
+                <a href="/my-account" class="text-red-500 hover:text-red-600">Change Address</a>
             </div>
+
+            <!-- Courier Selection -->
+            <div class="my-6">
+                <h3 class="text-lg font-semibold mb-4">Available Shipping Services</h3>
+                <form id="shipping-selection-form">
+                    <div class="space-y-4">
+                        <% shippingServices.forEach(function(service, index) { %>
+                            <div class="p-4 bg-gray-50 border rounded-lg">
+                                <label class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-bold text-gray-700"><%= service.name %> - <%= service.service %></h4>
+                                        <p class="text-gray-600"><%= service.description %></p>
+                                        <p class="text-gray-600">ETD: <%= service.etd || 'N/A' %></p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="font-bold text-gray-800">Rp <%= service.cost.toLocaleString() %></span>
+                                    </div>
+                                    <input 
+                                        type="radio" 
+                                        name="shippingOption" 
+                                        value='<%= JSON.stringify(service) %>' 
+                                        class="ml-4" 
+                                        <%= index === 0 ? "checked" : "" %> 
+                                    />
+                                </label>
+                            </div>
+                        <% }); %>
+                    </div>
+                </form>
+            </div>
+            
 
             <!-- Payment Method -->
             <div class="my-6">
                 <h3 class="text-lg font-semibold mb-2">Payment Method</h3>
-                <form action="/cart/checkout" method="POST">
+                <form id="checkout-form" action="/cart/checkout" method="POST">
+                    <input type="hidden" name="selectedShipping" id="selectedShipping">
+                    <input type="hidden" name="shippingCost" id="shippingCost">
+
                     <div class="space-y-2">
                         <% paymentMethods.forEach(function(method) { %>
                             <div>
-                                <input type="radio" id="<%= method.id %>" name="paymentMethod" value="<%= method.id %>" class="mr-2" required>
-                                <label for="<%= method.id %>" class="text-gray-700"><%= method.name %></label>
+                                <input type="radio" id="<%= method.id %>" name="paymentMethod" value="<%= method.id %>"
+                                    class="mr-2" required>
+                                <label for="<%= method.id %>" class="text-gray-700">
+                                    <%= method.name %>
+                                </label>
                             </div>
-                        <% }); %>
+                            <% }); %>
                     </div>
-                    <button type="submit" class="w-full bg-red-500 text-white py-3 rounded-lg mt-6 hover:bg-red-600 transition">
+
+                    <!-- Order Summary -->
+                    <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold mb-2">Order Summary</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span>Rp <%= totalPrice %></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Shipping Cost</span>
+                                <span id="selected-shipping-cost">Rp 0</span>
+                            </div>
+                            <div class="flex justify-between font-semibold pt-2 border-t">
+                                <span>Total</span>
+                                <span id="total-with-shipping">Rp <%= totalPrice %></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-red-500 text-white py-3 rounded-lg mt-6 hover:bg-red-600 transition"
+                        id="checkout-button" disabled>
                         Proceed to Checkout
                     </button>
                 </form>
             </div>
-
-            <!-- Total Price -->
-            <div class="flex justify-between font-semibold my-6">
-                <span>Total</span>
-                <span>Rp <%= totalPrice %></span>
-            </div>
         </div>
     </section>
+    <script>
+        // Mengupdate harga total ketika opsi pengiriman dipilih
+        document.querySelectorAll('input[name="shippingOption"]').forEach((radio) => {
+            radio.addEventListener('change', (e) => {
+                const selectedService = JSON.parse(e.target.value);
+                const shippingCost = selectedService.cost;
+                const totalPrice = <%= totalPrice %>; // Ambil total harga tanpa pengiriman dari server
+                const totalWithShipping = totalPrice + shippingCost;
+    
+                // Perbarui elemen yang menampilkan biaya pengiriman dan total
+                document.getElementById('selected-shipping-cost').textContent = `Rp ${shippingCost.toLocaleString()}`;
+                document.getElementById('total-with-shipping').textContent = `Rp ${totalWithShipping.toLocaleString()}`;
+                
+                // Simpan detail pengiriman yang dipilih ke hidden input untuk form checkout
+                document.getElementById('selectedShipping').value = JSON.stringify(selectedService);
+                document.getElementById('shippingCost').value = shippingCost;
+                document.getElementById('checkout-button').disabled = false;
+            });
+        });
+    
+        // Atur opsi pertama sebagai default pada load
+        const firstService = JSON.parse(document.querySelector('input[name="shippingOption"]:checked').value);
+        const firstShippingCost = firstService.cost;
+        const initialTotal = <%= totalPrice %> + firstShippingCost;
+        document.getElementById('selected-shipping-cost').textContent = `Rp ${firstShippingCost.toLocaleString()}`;
+        document.getElementById('total-with-shipping').textContent = `Rp ${initialTotal.toLocaleString()}`;
+        document.getElementById('selectedShipping').value = JSON.stringify(firstService);
+        document.getElementById('shippingCost').value = firstShippingCost;
+    </script>
+    
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-8">
@@ -63,5 +152,3 @@
             <p class="text-gray-400">&copy; 2025 Kilangan Tebu Uni Des. All rights reserved.</p>
         </div>
     </footer>
-</body>
-</html>

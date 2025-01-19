@@ -1,5 +1,4 @@
 const Product = require('../models/Product');
-const Category = require('../models/Category');
 const User = require('../models/User');
 const Cart = require('../models/Cart');
 const CartItem = require('../models/CartItem');
@@ -8,12 +7,10 @@ const { Op } = require('sequelize');
 class ProductController {
     async getAllProducts(req, res) {
         try {
-            const { category, search } = req.query;
+            const {  search } = req.query;
             const where = {};
             
-            if (category) {
-                where.categoryId = category;
-            }
+
             
             if (search) {
                 where.name = {
@@ -23,16 +20,10 @@ class ProductController {
 
             const products = await Product.findAll({
                 where,
-                include: [{
-                    model: Category,
-                    attributes: ['name']
-                }],
                 order: [['createdAt', 'DESC']]
             });
 
-            const categories = await Category.findAll();
             
-            // Get cart count and user info if user is authenticated
             let cartCount = 0;
             let user = null;
             const isLoggedIn = req.user ? true : false;
@@ -52,13 +43,12 @@ class ProductController {
                 });
 
                 if (cart) {
-                    cartCount = cart.CartItems.reduce((sum, item) => sum + item.quantity, 0);
+                    cartCount = cart.CartItems.reduce((sum) => sum + 1, 0);
                 }
             }
 
             res.render('user/products', {
                 products,
-                categories,
                 cartCount,
                 isLoggedIn,
                 user
@@ -71,12 +61,7 @@ class ProductController {
 
     async getProductById(req, res) {
         try {
-            const product = await Product.findByPk(req.params.id, {
-                include: [{
-                    model: Category,
-                    attributes: ['name']
-                }]
-            });
+            const product = await Product.findByPk(req.params.id);
 
             if (!product) {
                 return res.status(404).json({ message: 'Product not found' });
@@ -96,7 +81,7 @@ class ProductController {
                 return res.status(403).json({ message: 'Unauthorized access' });
             }
 
-            const { name, description, price, stock, categoryId } = req.body;
+            const { name, description, price, stock } = req.body;
             const image = req.file ? `/uploads/${req.file.filename}` : null;
 
             const product = await Product.create({
@@ -104,7 +89,6 @@ class ProductController {
                 description,
                 price,
                 stock,
-                categoryId,
                 image
             });
 
@@ -122,7 +106,7 @@ class ProductController {
                 return res.status(403).json({ message: 'Unauthorized access' });
             }
 
-            const { name, description, price, stock, categoryId } = req.body;
+            const { name, description, price, stock } = req.body;
             const product = await Product.findByPk(req.params.id);
 
             if (!product) {
@@ -136,7 +120,6 @@ class ProductController {
                 description,
                 price,
                 stock,
-                categoryId,
                 image
             });
 
