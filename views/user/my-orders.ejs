@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Kilangan Tebu Uni Des</title>
+    <link href="/output.css" rel="stylesheet">
+    <script src="./node_modules/preline/dist/preline.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Header (Same as index.ejs) -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <!-- Same header content as index.ejs -->
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Navigation Tabs -->
+        <div class="mb-8 border-b border-gray-200">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <a href="/my-account" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                    Dashboard
+                </a>
+                <a href="/my-account/pesanan" class="border-red-500 text-red-500 py-4 px-1 border-b-2 font-medium text-sm">
+                    Pesanan
+                </a>
+                <a href="/my-account/alamat" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                    Alamat
+                </a>
+                <a href="/logout" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                    Logout
+                </a>
+            </nav>
+        </div>
+
+        <!-- Orders Section -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6">Pesanan Saya</h2>
+            
+            <% if (orders && orders.length > 0) { %>
+                <div class="space-y-6">
+                    <% orders.forEach(function(order) { %>
+                        <div class="border rounded-lg p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold">Order #<%= order.orderNumber %></h3>
+                                    <p class="text-gray-600"><%= order.date %></p>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-sm font-medium
+                                    <% if (order.status === 'completed') { %>
+                                        bg-green-100 text-green-800
+                                    <% } else if (order.status === 'processing') { %>
+                                        bg-blue-100 text-blue-800
+                                    <% } else { %>
+                                        bg-yellow-100 text-yellow-800
+                                    <% } %>
+                                ">
+                                    <%= order.status %>
+                                </span>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <% order.items.forEach(function(item) { %>
+                                    <div class="flex items-center gap-4">
+                                        <img src="<%= item.image %>" alt="<%= item.name %>" class="w-16 h-16 object-cover rounded">
+                                        <div>
+                                            <h4 class="font-medium"><%= item.name %></h4>
+                                            <p class="text-gray-600">Quantity: <%= item.quantity %></p>
+                                            <p class="text-gray-600">Rp <%= item.price.toLocaleString() %></p>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                            
+                            <div class="mt-4 pt-4 border-t">
+                                <div class="flex justify-between">
+                                    <span class="font-medium">Total</span>
+                                    <span class="font-medium">Rp <%= order.total.toLocaleString() %></span>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="text-center py-12">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">Belum ada pesanan</h3>
+                    <p class="mt-1 text-sm text-gray-500">Mulai belanja untuk membuat pesanan pertama Anda.</p>
+                    <div class="mt-6">
+                        <a href="/shop" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600">
+                            Mulai Belanja
+                        </a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-gray-400">&copy; 2025 Kilangan Tebu Uni Des. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

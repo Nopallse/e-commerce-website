@@ -1,465 +1,256 @@
-<%- include("../layout/sidebar.ejs") %>
+<!-- views/admin/dashboard.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Ecommerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/output.css" rel="stylesheet">
+    <script src="./node_modules/preline/dist/preline.js"></script>
+</head>
+<body class="bg-gray-50 dark:bg-slate-900">
+    <!-- ========== MAIN CONTENT ========== -->
+    <!-- Sidebar -->
+    <%- include('../layout/sidebar') %>
+    <!-- End Sidebar -->
 
-  <!-- Content -->
-  <div class="w-full px-4 sm:px-6 md:px-8 lg:ps-72 dark:bg-gray-800">
-    <!-- your content goes here ... -->
-    <!-- Card Section -->
-    <div class="max-w-[85rem] px-4 py-4  sm:px-6 lg:px-8 mx-auto">
-      <!-- Grid -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <!-- Card -->
-        <div class="flex flex-col bg-gray-200 border shadow-sm rounded-xl">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="flex-shrink-0 flex justify-center items-center size-[46px] bg-gray-100 rounded-lg">
-              <svg class="flex-shrink-0 size-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-              </svg>
-            </div>
-
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Total new requests
-                </p>
-                <div class="hs-tooltip">
-                  <div class="hs-tooltip-toggle">
-                    <svg class="flex-shrink-0 size-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24"
-                      height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                      stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                      <path d="M12 17h.01" />
-                    </svg>
-                    <span
-                      class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm"
-                      role="tooltip">
-                      The number of daily users
-                    </span>
-                  </div>
+    <!-- Content -->
+    <div class="w-full pt-10 px-4 sm:px-6 md:px-8 lg:pl-72">
+        <!-- Page Heading -->
+        <header>
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">Dashboard</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative" data-hs-dropdown>
+                        <button class="py-2 px-4 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800" type="button">
+                            Actions
+                            <svg class="hs-dropdown-open:rotate-180 w-2.5 h-2.5 text-gray-600" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-[15rem] bg-white shadow-md rounded-lg p-2 mt-2 dark:bg-gray-800 dark:border dark:border-gray-700" aria-labelledby="hs-dropdown-basic">
+                            <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-md text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300" href="#">
+                                Add New Product
+                            </a>
+                            <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-md text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300" href="#">
+                                View Orders
+                            </a>
+                            <a class="flex items-center gap-x-3.5 py-2 px-3 rounded-md text-sm text-gray-800 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-300" href="#">
+                                Generate Report
+                            </a>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  <%
-                  // Hitung jumlah permintaan dengan tanggal yang sama dengan tanggal saat ini
-                  let count = 0;
-                  let now = new Date();
-                  let formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-
-                  permintaan.forEach(item => {
-                    if (item.tanggal === formattedDate) {
-                      count++;
-                    }
-                  });
-                %>
-                
-                <%= count %>
-                  
-                </h3>
-              </div>
             </div>
-          </div>
-        </div>
-        <!-- End Card -->
+        </header>
+        <!-- End Page Heading -->
 
-        <!-- Card -->
-        <div class="flex flex-col bg-gray-200 border shadow-sm rounded-xl">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="flex-shrink-0 flex justify-center items-center size-[46px] bg-gray-100 rounded-lg">
-              <svg class="flex-shrink-0 size-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M5 22h14" />
-                <path d="M5 2h14" />
-                <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22" />
-                <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2" />
-              </svg>
-            </div>
-
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Total requests processed
-                </p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl font-medium text-gray-800">
-                  <% count = 0; %>
-                  <% permintaan.forEach(item => { %>
-                      <% if (item.status === 'Proses' || item.status === 'Diajukan') { %>
-                          <% count++; %>
-                      <% } %>
-                  <% }); %>
-                  <%= count %>
-                  
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- End Card -->
-
-        <!-- Card -->
-        <div class="flex flex-col bg-gray-200 border shadow-sm rounded-xl">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="flex-shrink-0 flex justify-center items-center size-[46px] bg-gray-100 rounded-lg">
-              <svg class="flex-shrink-0 size-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6" />
-                <path d="m12 12 4 10 1.7-4.3L22 16Z" />
-              </svg>
-            </div>
-
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Total requests completed
-                </p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  <% count = 0; %>
-                  <% permintaan.forEach(item => { %>
-                      <% if (item.status === 'Selesai') { %>
-                          <% count++; %>
-                      <% } %>
-                  <% }); %>
-                  <%= count %>
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- End Card -->
-
-        <!-- Card -->
-        <div class="flex flex-col bg-gray-200 border shadow-sm rounded-xl">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="flex-shrink-0 flex justify-center items-center size-[46px] bg-gray-100 rounded-lg">
-              <svg class="flex-shrink-0 size-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M21 11V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6" />
-                <path d="m12 12 4 10 1.7-4.3L22 16Z" />
-              </svg>
-            </div>
-
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Total rejected
-                </p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800">
-                  <% count = 0; %>
-                  <% permintaan.forEach(item => { %>
-                      <% if (item.status === 'Ditolak') { %>
-                          <% count++; %>
-                      <% } %>
-                  <% }); %>
-                  <%= count %>
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Card -->
-        <div class="flex flex-col bg-gray-200 border shadow-sm rounded-xl">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="flex-shrink-0 flex justify-center items-center size-[46px] bg-gray-100 rounded-lg">
-              <svg class="flex-shrink-0 size-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M5 12s2.545-5 7-5c4.454 0 7 5 7 5s-2.546 5-7 5c-4.455 0-7-5-7-5z" />
-                <path d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
-                <path d="M21 17v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2" />
-                <path d="M21 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2" />
-              </svg>
-            </div>
-
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">
-                  Total requests
-                </p>
-                <div class="hs-tooltip">
-                  <div class="hs-tooltip-toggle">
-                    <svg class="flex-shrink-0 size-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24"
-                      height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                      stroke-linecap="round" stroke-linejoin="round">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-                      <path d="M12 17h.01" />
-                    </svg>
-                    <span
-                      class="hs-tooltip-content hs-tooltip-shown:opacity-100 hs-tooltip-shown:visible opacity-0 transition-opacity inline-block absolute invisible z-10 py-1 px-2 bg-gray-900 text-xs font-medium text-white rounded shadow-sm"
-                      role="tooltip">
-                      The average pageviews
-                    </span>
-                  </div>
+        <!-- Stats -->
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+            <!-- Sales Card -->
+            <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-4 md:p-5">
+                    <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase text-gray-600 dark:text-gray-400">
+                            Total Sales
+                        </span>
+                    </div>
+                    <div class="mt-1 flex items-center gap-x-2">
+                        <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-gray-200">
+                            $45,231.89
+                        </h3>
+                        <span class="flex items-center text-green-600">
+                            <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 9.5L6 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M2.5 6L6 2.5L9.5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="text-sm font-medium">12.5%</span>
+                        </span>
+                    </div>
                 </div>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl font-medium text-gray-800">
-                  <%= permintaan.length %>
-                </h3>
-              </div>
             </div>
+
+            <!-- Orders Card -->
+            <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-4 md:p-5">
+                    <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercase text-gray-600 dark:text-gray-400">
+                            Total Orders
+                        </span>
+                    </div>
+                    <div class="mt-1 flex items-center gap-x-2">
+                        <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-gray-200">
+                            2,431
+                        </h3>
+                        <span class="flex items-center text-green-600">
+                            <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 9.5L6 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M2.5 6L6 2.5L9.5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span class="text-sm font-medium">8.2%</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Card -->
+            <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-4 md:p-5">
+                    <div class="flex items-center gap-x-2">
+                        <span class="text-xs font-semibold uppercasetext-gray-600 dark:text-gray-400">
+                          Total Customers
+                      </span>
+                  </div>
+                  <div class="mt-1 flex items-center gap-x-2">
+                      <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-gray-200">
+                          1,845
+                      </h3>
+                      <span class="flex items-center text-green-600">
+                          <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M6 9.5L6 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                              <path d="M2.5 6L6 2.5L9.5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          <span class="text-sm font-medium">4.7%</span>
+                      </span>
+                  </div>
+              </div>
           </div>
-        </div>
-        <!-- End Card -->
+
+          <!-- Revenue Card -->
+          <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700">
+              <div class="p-4 md:p-5">
+                  <div class="flex items-center gap-x-2">
+                      <span class="text-xs font-semibold uppercase text-gray-600 dark:text-gray-400">
+                          Average Order Value
+                      </span>
+                  </div>
+                  <div class="mt-1 flex items-center gap-x-2">
+                      <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-gray-200">
+                          $248.32
+                      </h3>
+                      <span class="flex items-center text-red-600">
+                          <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M6 2.5L6 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                              <path d="M9.5 6L6 9.5L2.5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                          <span class="text-sm font-medium">2.3%</span>
+                      </span>
+                  </div>
+              </div>
+          </div>
       </div>
-      <!-- End Grid -->
-      <div class="mt-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <canvas id="requestsPerDayChart"></canvas>
+
+      <!-- Recent Orders -->
+      <div class="flex flex-col">
+          <div class="-m-1.5 overflow-x-auto">
+              <div class="p-1.5 min-w-full inline-block align-middle">
+                  <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
+                      <!-- Header -->
+                      <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-b border-gray-200 dark:border-gray-700">
+                          <div>
+                              <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+                                  Recent Orders
+                              </h2>
+                          </div>
+
+                          <div>
+                              <div class="inline-flex gap-x-2">
+                                  <a class="py-2 px-3 inline-flex justify-center items-center gap-2 rounded-md border font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800" href="#">
+                                      View All Orders
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- End Header -->
+
+                      <!-- Table -->
+                      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                          <thead class="bg-gray-50 dark:bg-slate-800">
+                              <tr>
+                                  <th scope="col" class="px-6 py-3 text-left">
+                                      <div class="flex items-center gap-x-2">
+                                          <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
+                                              Order ID
+                                          </span>
+                                      </div>
+                                  </th>
+                                  <th scope="col" class="px-6 py-3 text-left">
+                                      <div class="flex items-center gap-x-2">
+                                          <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
+                                              Customer
+                                          </span>
+                                      </div>
+                                  </th>
+                                  <th scope="col" class="px-6 py-3 text-left">
+                                      <div class="flex items-center gap-x-2">
+                                          <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
+                                              Status
+                                          </span>
+                                      </div>
+                                  </th>
+                                  <th scope="col" class="px-6 py-3 text-left">
+                                      <div class="flex items-center gap-x-2">
+                                          <span class="text-xs font-semibold uppercase tracking-wide text-gray-800 dark:text-gray-200">
+                                              Total
+                                          </span>
+                                      </div>
+                                  </th>
+                                  <th scope="col" class="px-6 py-3 text-right"></th>
+                              </tr>
+                          </thead>
+
+                          <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                              <tr>
+                                  <td class="h-px w-px whitespace-nowrap">
+                                      <div class="px-6 py-3">
+                                          <span class="text-sm text-gray-600 dark:text-gray-400">#3456</span>
+                                      </div>
+                                  </td>
+                                  <td class="h-px w-px whitespace-nowrap">
+                                      <div class="px-6 py-3">
+                                          <div class="flex items-center gap-x-2">
+                                              <span class="text-sm text-gray-600 dark:text-gray-400">John Doe</span>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  <td class="h-px w-px whitespace-nowrap">
+                                      <div class="px-6 py-3">
+                                          <span class="inline-flex items-center gap-1.5 py-0.5 px-2 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                              Completed
+                                          </span>
+                                      </div>
+                                  </td>
+                                  <td class="h-px w-px whitespace-nowrap">
+                                      <div class="px-6 py-3">
+                                          <span class="text-sm text-gray-600 dark:text-gray-400">$345.00</span>
+                                      </div>
+                                  </td>
+                                  <td class="h-px w-px whitespace-nowrap">
+                                      <div class="px-6 py-1.5">
+                                          <a class="inline-flex items-center gap-x-1.5 text-sm text-blue-600 decoration-2 hover:underline font-medium" href="#">
+                                              View
+                                          </a>
+                                      </div>
+                                  </td>
+                              </tr>
+                              <!-- Add more order rows as needed -->
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
           </div>
-          <div>
-            <canvas id="requestsByStatusChart"></canvas>
-          </div>
-          <div>
-            <canvas id="requestsByTargetChart"></canvas>
-          </div>
-        </div>
       </div>
-    </div>
-    <!-- End Card Section -->
   </div>
   <!-- End Content -->
-  <!-- ========== END MAIN CONTENT ========== -->
 
-
-  <div id="permintaan-data" data-permintaan="<%= JSON.stringify(permintaan) %>"></div>
-
-  <div id="notification-container" class="notification-container"></div>
-
-
-  <style>
-    .notification-container {
-      position: fixed;
-      bottom: 20px; /* Adjusted to bottom */
-      right: 20px;
-      width: 320px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column-reverse; /* Display notifications in reverse order */
-      gap: 10px;
-    }
-  
-    .notification {
-      background-color: #ffffff;
-      border: 1px solid #e0e0e0;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      cursor: pointer;
-    }
-  
-    .notification:hover {
-      transform: scale(1.02);
-    }
-  
-    .notification-title {
-      font-size: 16px;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #333;
-    }
-  
-    .notification-message {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 10px;
-    }
-  
-    .notification-timestamp {
-      font-size: 12px;
-      color: #999;
-      text-align: right;
-    }
-  
-    .notification-fade-out {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-  </style>
-  <!-- Menyertakan script untuk socket.io -->
-  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-  <script>
-    const socket = io("http://localhost:3000"); // Ganti URL dengan alamat server Anda jika berbeda
-    const nim = "<%= admin.nip %>";
-
-    // Saat terhubung, bergabung dengan room 'adminfti'
-    socket.on("connect", () => {
-      console.log("Connected to server");
-      socket.emit("join", nim); // Emit untuk bergabung dengan room 'adminfti'
-    });
-    
-    // Menerima notifikasi kegiatan baru
-    socket.on("new_permintaan", (data) => {
-      console.log("Notifikasi baru:", data);
-      showNotification(data);
-    });
-    
-    // Fungsi untuk menampilkan notifikasi di dashboard
-    function showNotification(data) {
-    const notificationContainer = document.getElementById("notification-container");
-    const notification = document.createElement("div");
-    notification.className = "notification";
-    notification.innerHTML = `
-      <div class="notification-title">${data.message}</div>
-      <div class="notification-message">${data.permintaan.isi}</div>
-      <div class="notification-timestamp">${data.permintaan.tanggal}</div>
-    `;
-
-    // Event listener untuk mengarahkan ke URL ketika notifikasi diklik
-    notification.addEventListener('click', () => {
-      window.location.href = data.permintaan.href;
-    });
-
-    notificationContainer.appendChild(notification);
-
-    // Menghapus notifikasi dengan efek fade out setelah beberapa detik
-    setTimeout(() => {
-      notification.classList.add('notification-fade-out');
-      setTimeout(() => {
-        notificationContainer.removeChild(notification);
-      }, 300); // Waktu transisi sesuai dengan CSS transition
-    }, 5000);
-  }
-    </script>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  // Data dari server (pastikan Anda menggantinya dengan data nyata)
-  const permintaanDataElement = document.getElementById('permintaan-data');
-  const permintaan = JSON.parse(permintaanDataElement.getAttribute('data-permintaan'));
-
-  // Menghitung jumlah permintaan per hari
-  const requestsPerDay = {};
-  permintaan.forEach(item => {
-    const date = item.tanggal;
-    if (!requestsPerDay[date]) {
-      requestsPerDay[date] = 0;
-    }
-    requestsPerDay[date]++;
-  });
-
-  // Menghitung jumlah permintaan berdasarkan status
-  const requestsByStatus = {
-    'Diajukan': 0,
-    'Proses': 0,
-    'Selesai': 0
-  };
-  permintaan.forEach(item => {
-    if (requestsByStatus[item.status] !== undefined) {
-      requestsByStatus[item.status]++;
-    }
-  });
-
-  // Menghitung jumlah permintaan berdasarkan tujuan
-  const requestsByTarget = {};
-  permintaan.forEach(item => {
-    const target = item.tujuan;
-    if (!requestsByTarget[target]) {
-      requestsByTarget[target] = 0;
-    }
-    requestsByTarget[target]++;
-  });
-
-  // Membuat chart jumlah permintaan per hari
-  const ctx1 = document.getElementById('requestsPerDayChart').getContext('2d');
-  new Chart(ctx1, {
-    type: 'line',
-    data: {
-      labels: Object.keys(requestsPerDay),
-      datasets: [{
-        label: 'Requests Per Day',
-        data: Object.values(requestsPerDay),
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  });
-
-  const themeToggleButton = document.getElementById('theme-toggle');
-    
-    // Check for saved 'theme' or prefer-color-scheme
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-
-    // Initial theme setup
-    if (savedTheme === 'dark' || (!savedTheme && prefersDarkScheme.matches)) {
-      document.documentElement.classList.add('dark');
-    }
-
-    function toggleTheme() {
-      // Toggle dark class on html element
-      document.documentElement.classList.toggle('dark');
-      
-      // Save theme preference
-      if (document.documentElement.classList.contains('dark')) {
-        localStorage.setItem('theme', 'dark');
-      } else {
-        localStorage.removeItem('theme');
-      }
-    }
-
-  // Membuat chart jumlah permintaan berdasarkan tujuan
-  const ctx3 = document.getElementById('requestsByTargetChart').getContext('2d');
-  new Chart(ctx3, {
-    type: 'pie',
-    data: {
-      labels: Object.keys(requestsByTarget),
-      datasets: [{
-        label: 'Requests By Target',
-        data: Object.values(requestsByTarget),
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true
-    }
-  });
-</script>
-
+  <!-- Scripts -->
   <script src="/preline/preline.js"></script>
-  </body>
-
-  </html>
+  <script>
+      // Initialize Preline
+      window.addEventListener('load', function () {
+          window.HSStaticMethods.autoInit();
+      });
+  </script>
+</body>
+</html>

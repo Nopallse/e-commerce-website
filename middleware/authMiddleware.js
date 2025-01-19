@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
-  const token = req.cookies.token 
-  console.log(token)
+  const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json({ message: 'Access denied. No token provided.' });
+    return res.redirect('/login');
   }
 
   try {
@@ -17,20 +16,6 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-const isAdmin = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
-    next();
-  } else {
-    res.status(403).json({ message: 'Access denied. Admin only.' });
-  }
-};
+// Remove isAdmin and isUser middlewares as they're replaced by checkRole
 
-const isUser = (req, res, next) => {
-  if (req.user && req.user.role === 'user') {
-    next();
-  } else {
-    res.status(403).json({ message: 'Access denied. User only.' });
-  }
-};
-
-module.exports = { verifyToken, isAdmin, isUser };
+module.exports = { verifyToken };

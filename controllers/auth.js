@@ -22,7 +22,8 @@ const register = async (req, res) => {
       password: hashedPassword,
       fullName,
       address,
-      phone
+      phone,
+      role: 'user' // Default role is user
     });
 
     res.render('login', { message: 'User created successfully.' });
@@ -62,17 +63,22 @@ const login = async (req, res) => {
     });
 
     const isLoggedIn = true;
-    res.render('user/home', { message: 'Logged in successfully.', isLoggedIn, user });
+    
+    // Redirect based on user role
+    if (user.role === 'admin') {
+      res.redirect('/admin/dashboard');
+    } else {
+      res.render('user/home', { message: 'Logged in successfully.', isLoggedIn, user });
+    }
 
   } catch (error) {
-    console.log(error);
+    console.error('Login error:', error);
     res.status(500).json({ message: 'Error logging in' });
   }
 };
 
 const logout = (req, res) => {
   try {
-    // Hapus token dengan mengosongkan cookie
     res.clearCookie('token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -85,5 +91,4 @@ const logout = (req, res) => {
   }
 };
 
-
-module.exports = { register, login,logout };
+module.exports = { register, login, logout };

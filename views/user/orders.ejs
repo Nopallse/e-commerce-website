@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kilangan Tebu Uni Des</title>
+    <link href="/output.css" rel="stylesheet">
+    <script src="./node_modules/preline/dist/preline.js"></script>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
+            <a class="flex items-center gap-3" href="/">
+                <img src="/images/logo.png" class="h-12" alt="Logo">
+                <div>
+                    <h1 class="text-xl font-semibold">Kilangan Tebu</h1>
+                    <span class="text-sm text-gray-500">Uni Des</span>
+                </div>
+            </a>
+            <ul class="hidden md:flex gap-6">
+                <li><a class="hover:text-red-500 transition" href="/">HOME</a></li>
+                <li><a class="hover:text-red-500 transition" href="/about">ABOUT</a></li>
+                <li><a class="hover:text-red-500 transition" href="/product">PRODUCT</a></li>
+                <li><span class="text-gray-700">
+                        <%= user.fullName %>
+                    </span></li>
+                <li>
+                    <a href="/my-account" class="relative text-red-500" title="Profile">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-circle-user-round">
+                            <path d="M18 20a6 6 0 0 0-12 0" />
+                            <circle cx="12" cy="10" r="4" />
+                            <circle cx="12" cy="12" r="10" />
+                        </svg>
+                    </a>
+                </li>
+                <li><a href="/cart" class="relative">
+                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span
+                            class="absolute -top-2 -right-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">0</span>
+                    </a></li>
+            </ul>
+            <button class="md:hidden text-gray-700">Menu</button>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Navigation Tabs -->
+        <div class="mb-8 border-b border-gray-200">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <a href="/my-account" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                
+                    Dashboard
+                </a>
+                <a href="/orders"
+                    class="border-red-500 text-red-500 py-4 px-1 border-b-2 font-medium text-sm">
+                    Pesanan
+                </a>
+                <a href="/logout"
+                    class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                    Logout
+                </a>
+            </nav>
+        </div>
+        <main class="bg-gray-50 min-h-screen">
+            <div class="max-w-7xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">My Orders</h2>
+
+                    <% if (orders && orders.length> 0) { %>
+                        <div class="space-y-4">
+                            <% orders.forEach(order=> { %>
+                                <div class="border rounded-lg p-4 hover:shadow-md transition">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-800">
+                                                Order #<%= order.id %>
+                                            </h3>
+                                            <p class="text-sm text-gray-500">
+                                                Ordered on <%= new Date(order.createdAt).toLocaleDateString() %>
+                                            </p>
+                                        </div>
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium
+                                    <%= order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                        order.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
+                                        'bg-gray-100 text-gray-800' %>">
+                                            <%= order.status %>
+                                        </span>
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <% order.OrderItems.forEach(item=> { %>
+                                            <div class="flex justify-between items-center text-sm">
+                                                <span>
+                                                    <%= item.Product.name %> x <%= item.quantity %>
+                                                </span>
+                                                <span class="font-medium">Rp <%= item.price.toLocaleString() %></span>
+                                            </div>
+                                            <% }) %>
+                                    </div>
+
+                                    <div class="mt-4 flex justify-between items-center border-t pt-4">
+                                        <div class="text-gray-700">
+                                            Total Amount: <span class="font-bold">Rp <%=
+                                                    order.totalAmount.toLocaleString() %></span>
+                                        </div>
+                                        <a href="/orders/<%= order.id %>"
+                                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                                <% }) %>
+                        </div>
+                        <% } else { %>
+                            <div class="text-center py-12">
+                                <div class="text-gray-500 mb-4">You haven't placed any orders yet</div>
+                                <a href="/shop"
+                                    class="inline-block bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition">
+                                    Start Shopping
+                                </a>
+                            </div>
+                            <% } %>
+                </div>
+            </div>
+        </main>
+    </main>
+
+    <%- include('../layout/footer') %>

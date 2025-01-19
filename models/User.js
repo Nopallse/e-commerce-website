@@ -33,7 +33,12 @@ User.init(
       defaultValue: "user",
     },
     fullName: DataTypes.STRING,
-    address: DataTypes.TEXT,
+    addressDetail: DataTypes.TEXT, // Detail alamat
+    village: DataTypes.STRING, // Desa/Kelurahan
+    district: DataTypes.STRING, // Kecamatan
+    city: DataTypes.STRING, // Kota/Kabupaten
+    province: DataTypes.STRING, // Provinsi
+    postalCode: DataTypes.STRING, // Kode Pos
     phone: DataTypes.STRING,
   },
   {

@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable("Users", {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -24,11 +24,16 @@ module.exports = {
         allowNull: false,
       },
       role: {
-        type: Sequelize.ENUM('admin', 'user'),
-        defaultValue: 'user',
+        type: Sequelize.ENUM("admin", "user"),
+        defaultValue: "user",
       },
       fullName: Sequelize.STRING,
-      address: Sequelize.TEXT,
+      addressDetail: Sequelize.TEXT,
+      village: Sequelize.STRING,
+      district: Sequelize.STRING,
+      city: Sequelize.STRING,
+      province: Sequelize.STRING,
+      postalCode: Sequelize.STRING,
       phone: Sequelize.STRING,
       createdAt: Sequelize.DATE,
       updatedAt: Sequelize.DATE,
@@ -36,6 +41,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable("Users");
   },
 };

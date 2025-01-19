@@ -1,13 +1,52 @@
 // routes/user.js
 const express = require('express');
 const router = express.Router();
-const { verifyToken, isUser } = require('../middleware/authMiddleware');
+const { verifyToken } = require('../middleware/authMiddleware');
 const { Product } = require('../models/Product');
 const { Cart, CartItem } = require('../models/Cart');
 const { Order, OrderItem } = require('../models/Order');
-
+const productController = require('../controllers/Product');
+const cartController = require('../controllers/Cart');
+const orderController = require('../controllers/Order');
+const userController = require('../controllers/Users');
 // Apply middleware to all user routes
-router.use(verifyToken, isUser);
+router.use(verifyToken);
+
+router.post('/update-address', userController.updateAddress);
+
+router.get('/product', productController.getAllProducts);
+router.get('/product/:id', productController.getProductById);
+
+router.get('/cart', cartController.getCart);
+router.post('/cart/add', cartController.addToCart);
+router.put('/cart/update/:id', cartController.updateCartItem);
+router.delete('/cart/remove/:id', cartController.removeCartItem);
+router.post('/cart/checkout', cartController.checkout);
+router.get('/cart/confirm', cartController.getOrderConfirmation);
+
+
+router.get('/orders', orderController.getAllOrders);
+router.get('/orders/:id', orderController.getOrderDetails);
+router.get('/orders/:id/confirmation', orderController.getOrderConfirmation);
+
+router.get('/my-account', userController.getDashboard);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Cart Management
 router.get('/cart', async (req, res) => {

@@ -4,7 +4,6 @@ const db = require("../config/database.js");
 
 class Product extends Sequelize.Model {
   static associate(models) {
-    Product.belongsTo(models.Category);
     Product.hasMany(models.CartItem);
     Product.hasMany(models.OrderItem);
   }
@@ -32,10 +31,6 @@ Product.init(
       defaultValue: 0,
     },
     image: DataTypes.STRING,
-    categoryId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
   },
   {
     sequelize: db,
