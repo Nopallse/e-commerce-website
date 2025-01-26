@@ -68,7 +68,7 @@ const login = async (req, res) => {
     if (user.role === 'admin') {
       res.redirect('/admin/dashboard');
     } else {
-      res.render('user/home', { message: 'Logged in successfully.', isLoggedIn, user });
+      res.redirect('/');
     }
 
   } catch (error) {

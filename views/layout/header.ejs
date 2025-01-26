@@ -8,46 +8,121 @@
     <script src="./node_modules/preline/dist/preline.js"></script>
     <!-- Custom CSS -->
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
     </style>
 </head>
-<body class="bg-gray-50 text-gray-700">
-    <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
-            <a class="flex items-center gap-3" href="/">
-                <img src="/images/logo.png" class="h-12" alt="Logo">
-                <div>
-                    <h1 class="text-xl font-semibold">Kilangan Tebu</h1>
-                    <span class="text-sm text-gray-500">Uni Des</span>
+<body class="bg-gray-50 font-inter">
+    <header class="fixed top-0 left-0 w-full bg-white shadow-lg z-50 transition-all duration-300 ease-in-out">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4 md:space-x-10">
+                <!-- Logo Section -->
+                <div class="flex items-center space-x-4 group">
+                    <img src="/images/logo.jpg" alt="Logo" class="h-12 w-12 rounded-full transition transform group-hover:scale-110 group-hover:rotate-6">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800 transition group-hover:text-red-600">Kilangan Tebu</h1>
+                        <p class="text-sm text-gray-500 tracking-wider">Uni Des</p>
+                    </div>
                 </div>
-            </a>
-            <ul class="hidden md:flex gap-6">
-                <li><a class="hover:text-red-500 transition" href="/">HOME</a></li>
-                <li><a class="hover:text-red-500 transition" href="/about">ABOUT</a></li>
-                <li><a class="hover:text-red-500 transition" href="/product">PRODUCT</a></li>
-                <% if (isLoggedIn) { %>
-                <li><span class="text-gray-700"><%= user.fullName %></span></li>
-                <li>
-                    <a href="/my-account" class="relative" title="Profile">
-                        <svg class="hover:text-red-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-user-round"><path d="M18 20a6 6 0 0 0-12 0"/><circle cx="12" cy="10" r="4"/><circle cx="12" cy="12" r="10"/></svg>
-                    </a>
-                </li>
-                <li><a href="/cart" class="relative">
-                    <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+
+                <!-- Navigation Desktop -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="/" class="text-gray-600 hover:text-red-600 font-medium transition transform hover:scale-105">Home</a>
+                    <a href="/about" class="text-gray-600 hover:text-red-600 font-medium transition transform hover:scale-105">About</a>
+                    <a href="/product" class="text-gray-600 hover:text-red-600 font-medium transition transform hover:scale-105">Products</a>
+                </nav>
+
+                <!-- User Actions -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <% if (isLoggedIn) { %>
+                    <div class="flex items-center space-x-4">
+                        <a href="/my-account" class="flex items-center space-x-2 group">
+                            <svg class="w-6 h-6 text-gray-600 group-hover:text-red-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M18 20a6 6 0 0 0-12 0"/>
+                                <circle cx="12" cy="10" r="4"/>
+                                <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                            <span class="text-gray-700 font-medium group-hover:text-red-600 transition"><%= user.fullName %></span>
+                        </a>
+                        <a href="/cart" class="relative group">
+                            <svg class="w-6 h-6 text-gray-600 group-hover:text-red-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            <span class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                                <%= cartCount %>
+                            </span>
+                        </a>
+                    </div>
+                    <% } else { %>
+                    <div class="flex space-x-4">
+                        <a href="/register" class="px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-600 hover:text-white transition">Register</a>
+                        <a href="/login" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Login</a>
+                    </div>
+                    <% } %>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuToggle" class="text-gray-600 hover:text-red-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileMenu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+            <div class="bg-white w-64 h-full absolute right-0 shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out">
+                <button id="closeMobileMenu" class="absolute top-4 right-4 text-gray-600 hover:text-red-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
-                    <span class="absolute -top-2 -right-2 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full"> <%= cartCount %></span>
-                </a></li>
-                
-                
-                <% } else { %>
-                <li><a class="hover:text-red-500 transition" href="/register">REGISTER</a></li>
-                <li><a class="hover:text-red-500 transition" href="/login">LOGIN</a></li>
-                <% } %>
-            </ul>
-            <button class="md:hidden text-gray-700">Menu</button>
-        </nav>
+                </button>
+                <nav class="flex flex-col p-6 space-y-4 mt-12">
+                    <a href="/" class="text-gray-700 hover:text-red-600 font-medium">Home</a>
+                    <a href="/about" class="text-gray-700 hover:text-red-600 font-medium">About</a>
+                    <a href="/product" class="text-gray-700 hover:text-red-600 font-medium">Products</a>
+                    <% if (isLoggedIn) { %>
+                    <div class="border-t pt-4">
+                        <div class="flex items-center space-x-2 mb-4">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path d="M18 20a6 6 0 0 0-12 0"/>
+                                <circle cx="12" cy="10" r="4"/>
+                                <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                            <span class="text-gray-700 font-medium"><%= user.fullName %></span>
+                        </div>
+                        <a href="/my-account" class="text-gray-700 hover:text-red-600 font-medium">My Account</a>
+                        <a href="/cart" class="text-gray-700 hover:text-red-600 font-medium mt-2">Cart (<%= cartCount %>)</a>
+                    </div>
+                    <% } else { %>
+                    <div class="border-t pt-4 space-y-2">
+                        <a href="/register" class="block text-gray-700 hover:text-red-600 font-medium">Register</a>
+                        <a href="/login" class="block text-gray-700 hover:text-red-600 font-medium">Login</a>
+                    </div>
+                    <% } %>
+                </nav>
+            </div>
+        </div>
     </header>
+
+    <script>
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            setTimeout(() => {
+                mobileMenu.querySelector('div').classList.remove('translate-x-full');
+            }, 50);
+        });
+
+        closeMobileMenu.addEventListener('click', () => {
+            mobileMenu.querySelector('div').classList.add('translate-x-full');
+            setTimeout(() => {
+                mobileMenu.classList.add('hidden');
+            }, 300);
+        });
+    </script>

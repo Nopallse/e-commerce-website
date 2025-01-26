@@ -1,0 +1,124 @@
+<%- include('../layout/header') %>
+
+    <div class="container mx-auto px-4 py-12 mt-20">
+        <div class="grid md:grid-cols-2 gap-10">
+            <!-- Product Image Section -->
+            <div class="bg-gray-100 rounded-lg p-6 flex flex-col items-center">
+                <div class="w-full mb-6">
+                    <img src="<%= product.image %>" alt="<%= product.name %>"
+                        class="w-full h-96 object-cover rounded-lg shadow-lg transition-transform hover:scale-105"
+                        id="mainProductImage">
+                </div>
+
+                <!-- Additional Images (if available) -->
+                <% if (product.additionalImages && product.additionalImages.length) { %>
+                    <div class="flex space-x-4 mt-4">
+                        <% product.additionalImages.forEach((img, index)=> { %>
+                            <img src="<%= img %>" alt="Product View <%= index + 1 %>"
+                                class="w-20 h-20 object-cover rounded-md cursor-pointer opacity-70 hover:opacity-100 transition"
+                                onclick="changeMainImage('<%= img %>')">
+                            <% }); %>
+                    </div>
+                    <% } %>
+            </div>
+
+            <!-- Product Details Section -->
+            <div>
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">
+                    <%= product.name %>
+                </h1>
+
+                <div class="flex items-center mb-6">
+                    <span class="text-3xl font-bold text-red-600 mr-4">Rp <%= product.price.toLocaleString() %></span>
+                    <% if (product.stock> 0) { %>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Available</span>
+                        <% } else { %>
+                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">Out of Stock</span>
+                            <% } %>
+                </div>
+
+                <p class="text-gray-600 mb-6 leading-relaxed">
+                    <%= product.description %>
+                </p>
+
+                <!-- Product Quantity Control -->
+                <div class="flex items-center mb-6 space-x-4">
+                    <button onclick="changeQuantity(-1)"
+                        class="bg-gray-200 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-300 transition">-</button>
+                    <input type="number" id="quantityInput" value="1" min="1" max="<%= product.stock %>"
+                        class="w-16 text-center border rounded-md py-2" readonly>
+                    <button onclick="changeQuantity(1)"
+                        class="bg-gray-200 text-gray-700 w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-300 transition">+</button>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <button id="addToCartBtn" onclick="addToCart(<%= product.id %>)"
+                    class="w-full bg-red-500 text-white py-3 rounded-lg hover:bg-red-600 transition transform active:scale-95 disabled:opacity-50"
+                    <%=product.stock===0 ? 'disabled' : '' %>
+                    >
+                    <%= product.stock> 0 ? 'Add to Cart' : 'Out of Stock' %>
+                </button>
+
+                <!-- Product Details -->
+                <div class="mt-8 bg-gray-50 rounded-lg p-4">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-700">Product Information</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <p class="text-gray-600">Stock</p>
+                            <p class="font-medium">
+                                <%= product.stock %>
+                            </p>
+                        </div>
+                        <% if (product.weight) { %>
+                            <div>
+                                <p class="text-gray-600">Weight</p>
+                                <p class="font-medium">
+                                    <%= product.weight %> g
+                                </p>
+                            </div>
+                            <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function changeQuantity(delta) {
+            const input = document.getElementById('quantityInput');
+            const maxStock = parseInt(input.getAttribute('max'));
+            let newValue = parseInt(input.value) + delta;
+
+            if (newValue < 1) newValue = 1;
+            if (newValue > maxStock) newValue = maxStock;
+
+            input.value = newValue;
+        }
+        async function addToCart(productId) {
+            try {
+                const response = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId, quantity: 1 })
+                });
+
+                if (response.ok) {
+                    alert('Product added to cart successfully!');
+                    location.reload();
+                } else if (response.status === 401) {
+                    alert('Please log in to add items to the cart');
+                    window.location.href = '/login';
+                } else {
+                    throw new Error('Failed to add product to cart');
+                }
+            } catch (error) {
+                alert('Error adding product to cart - ' + error.message);
+                console.error(error);
+            }
+
+        }
+    </script>
+
+    <%- include('../layout/footer') %>

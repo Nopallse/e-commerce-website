@@ -31,6 +31,10 @@ Product.init(
       defaultValue: 0,
     },
     image: DataTypes.STRING,
+    weight: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   },
   {
     sequelize: db,

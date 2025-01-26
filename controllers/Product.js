@@ -49,9 +49,10 @@ class ProductController {
 
             res.render('user/products', {
                 products,
-                cartCount,
-                isLoggedIn,
-                user
+                user,
+                isLoggedIn: req.isLoggedIn,
+                user: req.user,
+                cartCount: req.cartCount,
             });
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -67,7 +68,36 @@ class ProductController {
                 return res.status(404).json({ message: 'Product not found' });
             }
 
-            res.json(product);
+            let cartCount = 0;
+            let user = null;
+            const isLoggedIn = req.user ? true : false;
+
+            if (isLoggedIn) {
+                user = await User.findOne({ 
+                    where: { id: req.user.id },
+                    attributes: ['id', 'fullName', 'email'] // Only select needed fields
+                });
+
+                const cart = await Cart.findOne({
+                    where: { userId: req.user.id },
+                    include: [{
+                        model: CartItem,
+                        attributes: ['quantity']
+                    }]
+                });
+
+                if (cart) {
+                    cartCount = cart.CartItems.reduce((sum) => sum + 1, 0);
+                }
+            }
+
+            res.render('user/product', {
+                product,
+                isLoggedIn: req.isLoggedIn,
+                user: req.user,
+                cartCount: req.cartCount,
+                user
+            });
         } catch (error) {
             console.error('Error fetching product:', error);
             res.status(500).send('Error fetching product');

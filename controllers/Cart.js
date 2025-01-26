@@ -159,31 +159,35 @@ class CartController {
       ];
 
       const formBody = new URLSearchParams({
-        origin: '25126',
-        destination: '27411',
-        weight: '1000',
-        courier: 'jne:sicepat:ide:sap:jnt',
-        price: 'lowest'
+        origin: "25126",
+        destination: "27411",
+        weight: "1000",
+        courier:
+          "jne:sicepat:ide:ninja:tiki:lion:anteraja:ncs:rex:rpx:sentral:star:wahana:dse",
+        price: "lowest",
       }).toString();
-      
+
       const options = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'key': 'fWIRKxbJ9ce7bc45dbd6c261tW3rtR6K'
+          "Content-Type": "application/x-www-form-urlencoded",
+          key: "fWIRKxbJ9ce7bc45dbd6c261tW3rtR6K",
         },
-        body: formBody
+        body: formBody,
       };
-      
-      const shippingServices = await fetch('https://rajaongkir.komerce.id/api/v1/calculate/domestic-cost', options)
+
+      const shippingServices = await fetch(
+        "https://rajaongkir.komerce.id/api/v1/calculate/domestic-cost",
+        options
+      )
         .then((res) => res.json())
         .then((data) => data.data) // Hanya ambil bagian `data` dari respons
         .catch((err) => {
-            console.error('Error fetching shipping data:', err);
-            return [];
+          console.error("Error fetching shipping data:", err);
+          return [];
         });
 
-      
+      console.log(shippingServices);
 
       res.render("user/order-confirmation", {
         cartItems,
@@ -194,7 +198,7 @@ class CartController {
         user,
         couriers,
         paymentMethods,
-        shippingServices
+        shippingServices,
       });
     } catch (error) {
       console.error("Error fetching order confirmation:", error);
@@ -204,6 +208,13 @@ class CartController {
 
   async addToCart(req, res) {
     try {
+      // Check if user is authenticated
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ message: "Please log in to add items to the cart" });
+      }
+
       const { productId, quantity } = req.body;
 
       // Verify product exists and has enough stock
@@ -215,6 +226,8 @@ class CartController {
         return res.status(400).json({ message: "Not enough stock" });
       }
 
+      console.log(req.user);
+      console.log(req.body);
       // Get or create cart
       let [cart] = await Cart.findOrCreate({
         where: { userId: req.user.id },

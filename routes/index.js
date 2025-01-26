@@ -1,28 +1,36 @@
 const express = require("express");
 const router = express.Router();
-const { verifyToken } = require('../middleware/authMiddleware');
-const { User } = require('../models');
+const { User } = require("../models");
+const jwt = require("jsonwebtoken");
+const productController = require("../controllers/Product");
+const { Cart, CartItem, Product } = require("../models");
+const { Op } = require("sequelize");
+const { checkLogin } = require("../middleware/checkLogin");
 
-
-router.get('/',verifyToken ,async (req, res) => {
-  const isLoggedIn = req.user ? true : false; // Periksa apakah user ada di request
-  
-  const user = await User.findOne({ where: { id: req.user.id } });
-  console.log(user);
-  res.render('user/home', {
-    isLoggedIn,
-    user,
+router.get("/", checkLogin, async (req, res) => {
+  res.render("user/home", {
+    isLoggedIn: req.isLoggedIn,
+    user: req.user,
+    cartCount: req.cartCount,
   });
 });
 
-
-router.get('/login', (req, res) => {
-  res.render('login');
+router.get("/login", (req, res) => {
+  res.render("login");
 });
 
-router.get('/register', (req, res) => {
-  res.render('register');
+router.get("/register", (req, res) => {
+  res.render("register");
 });
 
+router.get("/product",checkLogin, productController.getAllProducts);
+router.get("/product/:id",checkLogin, productController.getProductById);
+router.get("/about", checkLogin, async (req, res) => {
+  res.render("user/about", {
+    isLoggedIn: req.isLoggedIn,
+    user: req.user,
+    cartCount: req.cartCount,
+  });
+});
 
 module.exports = router;

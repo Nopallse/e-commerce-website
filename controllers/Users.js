@@ -15,7 +15,9 @@ const userController = {
       }
       
       res.render('user/profile', {
-        user,
+        isLoggedIn: req.isLoggedIn,
+        user: req.user,
+        cartCount: req.cartCount,
         title: 'Dashboard'
       });
     } catch (error) {

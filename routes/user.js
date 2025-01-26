@@ -9,13 +9,12 @@ const productController = require('../controllers/Product');
 const cartController = require('../controllers/Cart');
 const orderController = require('../controllers/Order');
 const userController = require('../controllers/Users');
+const {checkLogin} = require('../middleware/checkLogin');
 // Apply middleware to all user routes
 router.use(verifyToken);
 
 router.post('/update-address', userController.updateAddress);
 
-router.get('/product', productController.getAllProducts);
-router.get('/product/:id', productController.getProductById);
 
 router.get('/cart', cartController.getCart);
 router.post('/cart/add', cartController.addToCart);
@@ -29,7 +28,7 @@ router.get('/orders', orderController.getAllOrders);
 router.get('/orders/:id', orderController.getOrderDetails);
 router.get('/orders/:id/confirmation', orderController.getOrderConfirmation);
 
-router.get('/my-account', userController.getDashboard);
+router.get('/my-account',checkLogin, userController.getDashboard);
 
 
 
