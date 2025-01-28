@@ -5,14 +5,23 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const http = require("http");
 const socketio = require("socket.io");
+const cors = require('cors');
+const axios = require('axios'); // Don't forget to install axios: npm install axios
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 const dotenv = require('dotenv');
+
 dotenv.config();
 
 // Socket.io setup
 app.set('io', io);
+app.use(cors({
+    origin: 'http://localhost:3001', // or your frontend origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'key'],
+    credentials: true
+}));
 
 io.on('connection', (socket) => {
   console.log('a user connected');
@@ -41,7 +50,30 @@ app.use('/preline', express.static(path.join(__dirname, 'node_modules/preline/di
 app.use('/sweet', express.static(path.join(__dirname, 'node_modules/sweetalert2/dist')));
 
 app.set('view engine', 'ejs');
-
+app.get('/api/proxy/postal-code', async (req, res) => {
+    try {
+        const postalCode = req.query.search;
+        const response = await axios({
+            method: 'get',
+            url: `https://rajaongkir.komerce.id/api/v1/destination/domestic-destination`,
+            params: { search: postalCode },
+            headers: {
+                'key': 'fWIRKxbJ9ce7bc45dbd6c261tW3rtR6K',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        console.log('Proxy response:', response.data);
+        res.json(response.data);
+    } catch (error) {
+        console.error('Proxy error:', error.response?.data || error.message);
+        res.status(500).json({ 
+            error: 'Failed to fetch postal code data',
+            details: error.response?.data || error.message 
+        });
+    }
+});
 // Database connection test
 const testDatabaseConnection = async () => {
     try {

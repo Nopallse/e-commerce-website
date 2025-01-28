@@ -39,6 +39,7 @@ User.init(
     city: DataTypes.STRING, // Kota/Kabupaten
     province: DataTypes.STRING, // Provinsi
     postalCode: DataTypes.STRING, // Kode Pos
+    idPostalCode: DataTypes.STRING, // ID Kode Pos
     phone: DataTypes.STRING,
   },
   {

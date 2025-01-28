@@ -6,6 +6,7 @@ const db = require("../config/database.js");
 const Order = require("../models/Order");
 const OrderItem = require("../models/OrderItem");
 const axios = require("axios");
+const midtransClient = require("midtrans-client");
 
 async function getCartItems(userId) {
   try {
@@ -40,7 +41,10 @@ async function getCartItems(userId) {
   }
 }
 
+
+
 class CartController {
+  
   async getCart(req, res) {
     try {
       // Check if user is authenticated
@@ -159,8 +163,8 @@ class CartController {
       ];
 
       const formBody = new URLSearchParams({
-        origin: "25126",
-        destination: "27411",
+        origin: "49287",
+        destination: user.idPostalCode,
         weight: "1000",
         courier:
           "jne:sicepat:ide:ninja:tiki:lion:anteraja:ncs:rex:rpx:sentral:star:wahana:dse",
@@ -320,59 +324,61 @@ class CartController {
     }
   }
 
+  
+
   async checkout(req, res) {
-    const t = await db.transaction();
+    const t = await db.transaction(); // Mulai transaksi
 
     try {
+      // Ambil data pengiriman dari request
+      const { selectedShipping, shippingCost } = req.body;
+      const parsedShipping = JSON.parse(selectedShipping);
+      const shippingFee = parseInt(shippingCost, 10);
+
       // Find user's cart and items
       const cart = await Cart.findOne({
         where: { userId: req.user.id },
-        include: [
-          {
-            model: CartItem,
-            include: [Product],
-          },
-        ],
+        include: [{ model: CartItem, include: [Product] }],
       });
 
       if (!cart || cart.CartItems.length === 0) {
         return res.status(400).json({ message: "Cart is empty" });
       }
 
-      // Calculate total amount
-      const totalAmount = cart.CartItems.reduce((sum, item) => {
+      // Hitung total harga produk
+      const productTotal = cart.CartItems.reduce((sum, item) => {
         return sum + item.Product.price * item.quantity;
       }, 0);
 
-      // Create order
+      // Total harga + biaya ongkir
+      const totalAmount = productTotal + shippingFee;
+
+      // Buat order di database
       const order = await Order.create(
         {
           userId: req.user.id,
           totalAmount: totalAmount,
+          shippingCost: shippingFee,
+          shippingService: parsedShipping.name,
           status: "pending",
           paymentStatus: "pending",
         },
         { transaction: t }
       );
 
-      // Create order items
-      const orderItems = await Promise.all(
+      // Create order items & update stock
+      await Promise.all(
         cart.CartItems.map(async (cartItem) => {
-          // Check stock availability
           if (cartItem.Product.stock < cartItem.quantity) {
             throw new Error(`Insufficient stock for ${cartItem.Product.name}`);
           }
 
-          // Update product stock
           await cartItem.Product.update(
-            {
-              stock: cartItem.Product.stock - cartItem.quantity,
-            },
+            { stock: cartItem.Product.stock - cartItem.quantity },
             { transaction: t }
           );
 
-          // Create order item
-          return OrderItem.create(
+          await OrderItem.create(
             {
               orderId: order.id,
               productId: cartItem.productId,
@@ -385,22 +391,46 @@ class CartController {
       );
 
       // Clear cart
-      await CartItem.destroy({
-        where: { cartId: cart.id },
-        transaction: t,
+      await CartItem.destroy({ where: { cartId: cart.id }, transaction: t });
+
+      await t.commit(); // Commit transaksi sebelum melanjutkan Midtrans
+
+      // Midtrans API integration
+      const snap = new midtransClient.Snap({
+        isProduction: false,
+        serverKey: process.env.MIDTRANS_SERVER_KEY,
       });
 
-      await t.commit();
+      const parameter = {
+        transaction_details: {
+          order_id: `order-${order.id}-${Date.now()}`,
+          gross_amount: totalAmount, // Total termasuk ongkir
+        },
+        customer_details: {
+          email: req.user.email,
+          first_name: req.user.name,
+        },
+      };
 
-      // Redirect to order confirmation page
-      res.redirect("/order/" + order.id);
+      const transaction = await snap.createTransaction(parameter);
+
+      res.json({
+        success: true,
+        paymentToken: transaction.token,
+        redirectUrl: transaction.redirect_url,
+      });
     } catch (error) {
-      await t.rollback();
+      if (t.finished !== "commit") {
+        await t.rollback(); // Hanya rollback jika transaksi belum commit
+      }
+
       console.error("Error during checkout:", error);
-      res.status(500).json({
-        success: false,
-        message: error.message || "Error during checkout",
-      });
+      res
+        .status(500)
+        .json({
+          success: false,
+          message: error.message || "Error during checkout",
+        });
     }
   }
 }

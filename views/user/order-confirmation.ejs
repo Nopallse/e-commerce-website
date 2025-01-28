@@ -70,22 +70,9 @@
 
             <!-- Payment Method -->
             <div class="my-6">
-                <h3 class="text-lg font-semibold mb-2">Payment Method</h3>
                 <form id="checkout-form" action="/cart/checkout" method="POST">
                     <input type="hidden" name="selectedShipping" id="selectedShipping">
                     <input type="hidden" name="shippingCost" id="shippingCost">
-
-                    <div class="space-y-2">
-                        <% paymentMethods.forEach(function(method) { %>
-                            <div>
-                                <input type="radio" id="<%= method.id %>" name="paymentMethod" value="<%= method.id %>"
-                                    class="mr-2" required>
-                                <label for="<%= method.id %>" class="text-gray-700">
-                                    <%= method.name %>
-                                </label>
-                            </div>
-                            <% }); %>
-                    </div>
 
                     <!-- Order Summary -->
                     <div class="mt-6 p-4 bg-gray-50 rounded-lg">
@@ -116,26 +103,23 @@
         </div>
     </section>
     <script>
-        // Mengupdate harga total ketika opsi pengiriman dipilih
         document.querySelectorAll('input[name="shippingOption"]').forEach((radio) => {
             radio.addEventListener('change', (e) => {
                 const selectedService = JSON.parse(e.target.value);
                 const shippingCost = selectedService.cost;
-                const totalPrice = <%= totalPrice %>; // Ambil total harga tanpa pengiriman dari server
+                const totalPrice = <%= totalPrice %>;
                 const totalWithShipping = totalPrice + shippingCost;
     
-                // Perbarui elemen yang menampilkan biaya pengiriman dan total
                 document.getElementById('selected-shipping-cost').textContent = `Rp ${shippingCost.toLocaleString()}`;
                 document.getElementById('total-with-shipping').textContent = `Rp ${totalWithShipping.toLocaleString()}`;
-                
-                // Simpan detail pengiriman yang dipilih ke hidden input untuk form checkout
+    
                 document.getElementById('selectedShipping').value = JSON.stringify(selectedService);
                 document.getElementById('shippingCost').value = shippingCost;
                 document.getElementById('checkout-button').disabled = false;
             });
         });
     
-        // Atur opsi pertama sebagai default pada load
+        // Set default shipping cost
         const firstService = JSON.parse(document.querySelector('input[name="shippingOption"]:checked').value);
         const firstShippingCost = firstService.cost;
         const initialTotal = <%= totalPrice %> + firstShippingCost;

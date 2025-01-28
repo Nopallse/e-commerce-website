@@ -75,7 +75,7 @@ const userController = {
     try {
       const userId = req.user.id; 
       const { address } = req.body;
-  
+      console.log(address);
       // Validasi keberadaan pengguna
       const user = await User.findByPk(userId);
       if (!user) {
@@ -90,6 +90,7 @@ const userController = {
         city: address.city,
         province: address.province,
         postalCode: address.postalCode,
+        idPostalCode: address.idPostalCode
       });
   
       return res.status(200).json({ message: 'Alamat berhasil diperbarui' });
