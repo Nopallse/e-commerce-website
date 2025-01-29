@@ -2,6 +2,8 @@ const Order = require('../models/Order');
 const OrderItem = require('../models/OrderItem');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const Cart = require("../models/Cart");
+const CartItem = require("../models/CartItem");
 
 class OrderController {
     async getAllOrders(req, res) {
@@ -19,10 +21,37 @@ class OrderController {
                 }],
                 order: [['createdAt', 'DESC']]
             });
+            let [cart] = await Cart.findOrCreate({
+                where: { userId: req.user.id },
+              });
+        
+              console.log(cart);
+        
+              // Get cart items with product details
+              const cartItems = await CartItem.findAll({
+                where: { cartId: cart.id },
+                include: [
+                  {
+                    model: Product,
+                    attributes: ["name", "price", "image"],
+                  },
+                ],
+              });
+        
+              console.log(cartItems);
+        
+              // Calculate total price
+              const totalPrice = cartItems.reduce((sum, item) => {
+                return sum + item.Product.price * item.quantity;
+              }, 0);
+        
+              // Get total items count for header
+              const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
             res.render('user/orders', {
                 orders,
                 user,
+                cartCount,
                 isLoggedIn: true
             });
         } catch (error) {
@@ -53,9 +82,37 @@ class OrderController {
                 attributes: ['id', 'fullName', 'email']
             });
 
+            let [cart] = await Cart.findOrCreate({
+                where: { userId: req.user.id },
+              });
+        
+              console.log(cart);
+        
+              // Get cart items with product details
+              const cartItems = await CartItem.findAll({
+                where: { cartId: cart.id },
+                include: [
+                  {
+                    model: Product,
+                    attributes: ["name", "price", "image"],
+                  },
+                ],
+              });
+        
+              console.log(cartItems);
+        
+              // Calculate total price
+              const totalPrice = cartItems.reduce((sum, item) => {
+                return sum + item.Product.price * item.quantity;
+              }, 0);
+        
+              // Get total items count for header
+              const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
             res.render('user/orders-detail', {
                 order,
                 user,
+                cartCount,
                 isLoggedIn: true
             });
         } catch (error) {

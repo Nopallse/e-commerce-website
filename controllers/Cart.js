@@ -41,10 +41,7 @@ async function getCartItems(userId) {
   }
 }
 
-
-
 class CartController {
-  
   async getCart(req, res) {
     try {
       // Check if user is authenticated
@@ -324,36 +321,74 @@ class CartController {
     }
   }
 
-  
-
   async checkout(req, res) {
-    const t = await db.transaction(); // Mulai transaksi
+
+
+    
+    const t = await db.transaction();
+
 
     try {
-      // Ambil data pengiriman dari request
+      const isLoggedIn = req.user ? true : false;
+      if (!isLoggedIn) {
+        return res.redirect("/login");
+      }
+      // Get user info
+      const user = await User.findOne({
+        where: { id: req.user.id },
+        attributes: ["id", "fullName", "email"],
+      });
+
+      const cart = await Cart.findOne({
+        where: { userId: req.user.id },
+        include: [
+          {
+            model: CartItem,
+            include: [Product],
+          },
+        ],
+      });
+
+
+      // Get cart items with product details
+      const cartItems = await CartItem.findAll({
+        where: { cartId: cart.id },
+        include: [
+          {
+            model: Product,
+            attributes: ["name", "price", "image"],
+          },
+        ],
+      });
+
+      console.log(cartItems);
+
+      // Calculate total price
+      const totalPrice = cartItems.reduce((sum, item) => {
+        return sum + item.Product.price * item.quantity;
+      }, 0);
+
+      // Get total items count for header
+      const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
       const { selectedShipping, shippingCost } = req.body;
       const parsedShipping = JSON.parse(selectedShipping);
       const shippingFee = parseInt(shippingCost, 10);
 
       // Find user's cart and items
-      const cart = await Cart.findOne({
-        where: { userId: req.user.id },
-        include: [{ model: CartItem, include: [Product] }],
-      });
+     
 
       if (!cart || cart.CartItems.length === 0) {
         return res.status(400).json({ message: "Cart is empty" });
       }
 
-      // Hitung total harga produk
+      // Calculate product total
       const productTotal = cart.CartItems.reduce((sum, item) => {
         return sum + item.Product.price * item.quantity;
       }, 0);
 
-      // Total harga + biaya ongkir
       const totalAmount = productTotal + shippingFee;
 
-      // Buat order di database
+      // Create order
       const order = await Order.create(
         {
           userId: req.user.id,
@@ -367,7 +402,7 @@ class CartController {
       );
 
       // Create order items & update stock
-      await Promise.all(
+      const orderItems = await Promise.all(
         cart.CartItems.map(async (cartItem) => {
           if (cartItem.Product.stock < cartItem.quantity) {
             throw new Error(`Insufficient stock for ${cartItem.Product.name}`);
@@ -378,7 +413,7 @@ class CartController {
             { transaction: t }
           );
 
-          await OrderItem.create(
+          return OrderItem.create(
             {
               orderId: order.id,
               productId: cartItem.productId,
@@ -391,46 +426,92 @@ class CartController {
       );
 
       // Clear cart
-      await CartItem.destroy({ where: { cartId: cart.id }, transaction: t });
-
-      await t.commit(); // Commit transaksi sebelum melanjutkan Midtrans
-
-      // Midtrans API integration
-      const snap = new midtransClient.Snap({
-        isProduction: false,
-        serverKey: process.env.MIDTRANS_SERVER_KEY,
+      await CartItem.destroy({
+        where: { cartId: cart.id },
+        transaction: t,
       });
 
-      const parameter = {
+      // Prepare item details for Midtrans
+      const itemDetails = cart.CartItems.map((item) => ({
+        id: item.Product.id,
+        price: item.Product.price,
+        quantity: item.quantity,
+        name: item.Product.name.substring(0, 50), // Midtrans has 50 char limit
+      }));
+
+      // Add shipping fee as an item
+      itemDetails.push({
+        id: "SHIPPING",
+        price: shippingFee,
+        quantity: 1,
+        name: `Shipping Fee (${parsedShipping.name})`,
+      });
+
+      await t.commit();
+
+      // Initialize Midtrans Snap for Development
+      console.log("Initializing Midtrans in sandbox mode...");
+      console.log("MIDTRANS_SERVER_KEY_SANDBOX:", process.env.MIDTRANS_SERVER_KEY_SANDBOX);
+      let snap = new midtransClient.Snap({
+        // Set to true if you want Production Environment (accept real transaction).
+        isProduction: false,
+        serverKey: process.env.MIDTRANS_SERVER_KEY_SANDBOX,
+      });
+      
+      console.log("Snap instance created:", snap);
+
+      const orderId = `ORDER-${order.id}-${Date.now()}`;
+
+      const transactionDetails = {
         transaction_details: {
-          order_id: `order-${order.id}-${Date.now()}`,
-          gross_amount: totalAmount, // Total termasuk ongkir
+          order_id: orderId,
+          gross_amount: totalAmount,
         },
+        item_details: itemDetails,
         customer_details: {
-          email: req.user.email,
           first_name: req.user.name,
+          email: req.user.email,
+          phone: req.user.phone || "0812345678", // Add phone if available
+        },
+        credit_card: {
+          secure: true,
+        },
+        callbacks: {
+          finish: `${process.env.FRONTEND_URL}/order/status/${order.id}`,
+          error: `${process.env.FRONTEND_URL}/order/error/${order.id}`,
+          pending: `${process.env.FRONTEND_URL}/order/pending/${order.id}`,
         },
       };
 
-      const transaction = await snap.createTransaction(parameter);
+      console.log("Transaction details prepared:", transactionDetails);
 
-      res.json({
-        success: true,
-        paymentToken: transaction.token,
-        redirectUrl: transaction.redirect_url,
+      const transaction = await snap.createTransaction(transactionDetails);
+
+      // Update order with Midtrans orderId
+      await order.update({
+        midtransOrderId: orderId,
       });
+
+      console.log("Transaction created successfully:", transaction);
+
+
+      res.render('user/payment', {
+        orderId: order.id,
+        paymentToken: transaction.token,
+        isLoggedIn: isLoggedIn,
+        user,
+        cartCount
+    });
     } catch (error) {
       if (t.finished !== "commit") {
-        await t.rollback(); // Hanya rollback jika transaksi belum commit
+        await t.rollback();
       }
 
       console.error("Error during checkout:", error);
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: error.message || "Error during checkout",
-        });
+      res.status(500).json({
+        success: false,
+        message: error.message || "Error during checkout",
+      });
     }
   }
 }
