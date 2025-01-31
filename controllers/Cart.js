@@ -188,7 +188,7 @@ class CartController {
           return [];
         });
 
-      console.log(shippingServices);
+      console.log(shippingServices,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
       res.render("user/order-confirmation", {
         cartItems,
