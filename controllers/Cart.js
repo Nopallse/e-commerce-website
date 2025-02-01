@@ -335,9 +335,7 @@ class CartController {
       }
       // Get user info
       const user = await User.findOne({
-        where: { id: req.user.id },
-        attributes: ["id", "fullName", "email"],
-      });
+        where: { id: req.user.id }});
 
       const cart = await Cart.findOne({
         where: { userId: req.user.id },
@@ -388,13 +386,15 @@ class CartController {
 
       const totalAmount = productTotal + shippingFee;
 
+      const shippingAddress = `${user.addressDetail}, ${user.village}, ${user.district}, ${user.city}, ${user.province}, ${user.postalCode}`
       // Create order
       const order = await Order.create(
         {
           userId: req.user.id,
-          totalAmount: totalAmount,
+          totalAmount: productTotal,
           shippingCost: shippingFee,
           shippingService: parsedShipping.name,
+          shippingAddress: shippingAddress,
           status: "pending",
           paymentStatus: "pending",
         },
@@ -490,6 +490,8 @@ class CartController {
       // Update order with Midtrans orderId
       await order.update({
         midtransOrderId: orderId,
+        paymentToken: transaction.token,
+
       });
 
       console.log("Transaction created successfully:", transaction);

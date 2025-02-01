@@ -27,7 +27,9 @@ router.get('/cart/confirm', cartController.getOrderConfirmation);
 router.get('/orders', orderController.getAllOrders);
 router.get('/orders/:id', orderController.getOrderDetails);
 router.get('/orders/:id/confirmation', orderController.getOrderConfirmation);
+router.post('/orders/:id/update-payment-status', orderController.updatePaymentStatus);
 
+router.get('/payment/:orderId', orderController.getPaymentPage);
 router.get('/my-account',checkLogin, userController.getDashboard);
 
 

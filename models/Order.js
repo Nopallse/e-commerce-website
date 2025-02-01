@@ -16,6 +16,14 @@ Order.init(
       primaryKey: true,
       autoIncrement: true,
     },
+    midtransOrderId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    paymentToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -27,6 +35,11 @@ Order.init(
     status: {
       type: DataTypes.ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled'),
       defaultValue: 'pending',
+    },
+    shippingService: DataTypes.STRING,
+    shippingCost: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
     },
     shippingAddress: DataTypes.TEXT,
     paymentStatus: {

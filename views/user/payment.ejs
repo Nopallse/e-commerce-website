@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,26 +8,29 @@
     <link href="/output.css" rel="stylesheet">
     <script src="./node_modules/preline/dist/preline.js"></script>
     <!-- Add Midtrans Snap Library -->
-    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<%= process.env.MIDTRANS_CLIENT_KEY_SANDBOX %>"></script>
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="<%= process.env.MIDTRANS_CLIENT_KEY_SANDBOX %>"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
     </style>
 </head>
+
 <body class="bg-gray-50 font-inter">
     <main class="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-3xl mx-auto">
             <div class="bg-white rounded-lg shadow-md p-6 mt-8">
                 <div id="loadingState" class="space-y-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-6">Processing Payment</h2>
-                    
+
                     <div class="space-y-4">
                         <div class="flex items-center justify-between border-b pb-4">
                             <span class="text-gray-600">Order ID:</span>
                             <span class="font-medium text-gray-800">#<%= orderId %></span>
                         </div>
-                        
+
                         <div class="text-center py-8">
-                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4">
+                            </div>
                             <p class="text-gray-600 mb-4">Preparing payment gateway...</p>
                             <p class="text-sm text-gray-500">Please wait while we connect to Midtrans</p>
                         </div>
@@ -36,7 +40,8 @@
                 <div id="errorState" class="hidden space-y-6">
                     <h2 class="text-2xl font-bold text-red-600 mb-6">Payment Error</h2>
                     <p class="text-gray-600" id="errorMessage">An error occurred while processing your payment.</p>
-                    <button onclick="retryPayment()" class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition">
+                    <button onclick="retryPayment()"
+                        class="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition">
                         Try Again
                     </button>
                 </div>
@@ -46,7 +51,7 @@
 
     <script>
         const paymentToken = "<%= paymentToken %>";
-        
+        const orderId = "<%= orderId %>";
         function showError(message) {
             document.getElementById('loadingState').classList.add('hidden');
             document.getElementById('errorState').classList.remove('hidden');
@@ -59,6 +64,29 @@
             initPayment();
         }
 
+        async function updatePaymentStatus(status) {
+            try {
+                const response = await fetch(`/orders/${orderId}/update-payment-status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Jika menggunakan token
+                    },
+                    body: JSON.stringify({ paymentStatus: status }),
+                });
+                console.log(response);
+                if (!response.ok) {
+                    throw new Error('Failed to update payment status');
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error updating payment status:', error);
+                throw error;
+            }
+        }
+
         function initPayment() {
             if (!paymentToken) {
                 showError("Invalid payment token. Please try again or contact support.");
@@ -68,14 +96,19 @@
             try {
                 // Open Snap payment popup
                 window.snap.pay(paymentToken, {
-                    onSuccess: function(result) {
-                        window.location.href = `/order/status/${<%= orderId %>}`;
+                    onSuccess: async function (result) {
+                        try {
+                            await updatePaymentStatus('paid');
+                            window.location.href = `/orders/${orderId}`;
+                        } catch (error) {
+                            showError("Failed to update payment status. Please contact support.");
+                        }
                     },
-                    onPending: function(result) {
-                        window.location.href = `/order/pending/${<%= orderId %>}`;
+                    onPending: function (result) {
+                        window.location.href = `/orders/${<%= orderId %>}`;
                     },
                     onError: function(result) {
-                        window.location.href = `/order/error/${<%= orderId %>}`;
+                        window.location.href = `/ orders / error / ${<%= orderId %>}`;
                     },
                     onClose: function() {
                         // Handle if customer closes the payment popup
@@ -99,4 +132,5 @@
         };
     </script>
 </body>
+
 </html>
