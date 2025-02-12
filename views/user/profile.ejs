@@ -1,396 +1,440 @@
 <%- include('../layout/header') %>
 
     <!-- Main Content -->
-<!-- Main Content -->
-<main class="max-w-7xl mx-auto px-6 py-8">
-    <!-- Navigation Tabs -->
-    <div class="mb-8 border-b border-gray-200">
-        <nav class="flex space-x-8" aria-label="Tabs">
-            <a href="/my-account" class="border-red-500 text-red-500 py-4 px-1 border-b-2 font-medium text-sm">
-                Dashboard
-            </a>
-            <a href="/orders" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
-                Pesanan
-            </a>
-            <a href="/auth/logout" class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
-                Logout
-            </a>
-        </nav>
-    </div>
-
-    <!-- Profile Section -->
- <div class="bg-white rounded-lg shadow-md p-6">
-    <div class="flex items-center gap-6 mb-8">
-        <div class="w-24 h-24 bg-gray-200 rounded-full overflow-hidden">
-            <img src="/images/default-avatar.png" alt="Profile" class="w-full h-full object-cover">
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Navigation Tabs -->
+        <div class="mb-8 border-b border-gray-200">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <a href="/my-account" class="border-red-500 text-red-500 py-4 px-1 border-b-2 font-medium text-sm">
+                    Dashboard
+                </a>
+                <a href="/orders"
+                    class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                    Pesanan
+                </a>
+                <a href="/auth/logout"
+                    class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 border-b-2 font-medium text-sm">
+                    Logout
+                </a>
+            </nav>
         </div>
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800"><%= user.fullName %></h1>
-            <p class="text-gray-600"><%= user.email %></p>
-        </div>
-    </div>
 
-    <!-- Account Details -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <h2 class="text-lg font-semibold mb-4">Account Details</h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <p class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4"><%= user.fullName %></p>
+        <!-- Profile Section -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex items-center gap-6 mb-8">
+                <div class="w-24 h-24 bg-red-500 rounded-full overflow-hidden flex items-center justify-center">
+                    <span class="text-white text-3xl font-bold">
+                        <%= user.fullName.split(' ').map(name => name[0]).join('').substring(0, 2).toUpperCase() %>
+                    </span>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <p class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4"><%= user.email %></p>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Phone Number</label>
-                    <p class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4"><%= user.phone %></p>
+                    <h1 class="text-2xl font-bold text-gray-800">
+                        <%= user.fullName %>
+                    </h1>
+                    <p class="text-gray-600">
+                        <%= user.email %>
+                    </p>
                 </div>
             </div>
-        </div>
 
-        <div>
-            <h2 class="text-lg font-semibold mb-4">Alamat</h2>
-            <div class="space-y-4">
+            <!-- Account Details -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Alamat Saat Ini</label>
-                    <% if (user.addressDetail && user.village && user.district && user.city && user.province && user.postalCode) { %>
-                        <p class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4">
-                            <%= `${user.addressDetail}, ${user.village}, ${user.district}, ${user.city}, ${user.province}, ${user.postalCode}` %>
-                        </p>
-                    <% } else { %>
-                        <p class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4">
-                            Alamat belum ditambahkan
-                        </p>
-                    <% } %>
-                </div>
-                <div>
-                    <button onclick="openAddressModal()" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">
-                        Ganti Alamat
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-    <!-- Address Modal -->
-    <div id="addressModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h2 class="text-lg font-semibold mb-4">Atur Alamat</h2>
-            <form id="addressForm" class="space-y-4">
-                <!-- Province -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Provinsi</label>
-                    <select id="province" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
-                        <option value="">Pilih Provinsi</option>
-                    </select>
-                </div>
-    
-                <!-- City -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Kota/Kabupaten</label>
-                    <select id="city" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" disabled>
-                        <option value="">Pilih Kota/Kabupaten</option>
-                    </select>
-                </div>
-    
-                <!-- District -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Kecamatan</label>
-                    <select id="district" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" disabled>
-                        <option value="">Pilih Kecamatan</option>
-                    </select>
-                </div>
-    
-                <!-- Village -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Desa/Kelurahan</label>
-                    <select id="village" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" disabled>
-                        <option value="">Pilih Desa/Kelurahan</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Kode Pos</label>
-                    <select id="postalCode" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500" disabled>
-                        <option value="">Pilih Kode Pos</option>
-                    </select>
-                </div>
-    
-             
-    
-                <!-- Detail Address -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Detail Alamat</label>
-                    <input type="text" id="detailAddress" placeholder="Masukkan nama jalan, nomor rumah, RT/RW" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
-                </div>
-    
-                <!-- Loading Indicator -->
-                <div id="loadingIndicator" class="hidden">
-                    <div class="flex items-center justify-center">
-                        <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span class="ml-2">Memuat...</span>
+                    <h2 class="text-lg font-semibold mb-4">Account Details</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <p
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4">
+                                <%= user.fullName %>
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <p
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4">
+                                <%= user.email %>
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Phone Number</label>
+                            <p
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4">
+                                <%= user.phone %>
+                            </p>
+                        </div>
                     </div>
                 </div>
-    
-                <!-- Buttons -->
-                <div class="flex justify-end gap-4 pt-4">
-                    <button type="button" onclick="closeAddressModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">
-                        Batal
-                    </button>
-                    <button type="submit" id="submitButton" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
-                        Simpan
-                    </button>
+
+                <div>
+                    <% if (!user.postalCode) { %>
+                        <div class="bg-yellow-100 text-yellow-700 p-4 rounded-md mb-4">
+                            <p>Harap lengkapi alamat Anda sebelum melakukan pemesanan.</p>
+                        </div>
+                    <% } %>
+                    <h2 class="text-lg font-semibold mb-4">Alamat</h2>
+                    <div class="space-y-4">
+                        
+                        <div>
+                            <% if (user.addressDetail && user.village && user.district && user.city && user.province &&
+                                user.postalCode) { %>
+                                <p
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4">
+                                    <%= `${user.addressDetail}, ${user.village}, ${user.district}, ${user.city},
+                                        ${user.province}, ${user.postalCode}` %>
+                                </p>
+                                <% } else { %>
+                                    <p
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 py-2 px-4">
+                                        Alamat belum ditambahkan
+                                    </p>
+                                    <% } %>
+                        </div>
+                        <div>
+                            <button onclick="openAddressModal()"
+                                class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">
+                                Ganti Alamat
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
-    
-</main>
 
-<script>
-    const BASE_URL = 'https://alamat.thecloudalert.com/api';
-    const RAJA_ONGKIR_URL = 'https://rajaongkir.komerce.id/api/v1/destination/domestic-destination';
-    const RAJA_ONGKIR_KEY = 'fWIRKxbJ9ce7bc45dbd6c261tW3rtR6K';    
-    const addressModal = document.getElementById('addressModal');
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const provinceSelect = document.getElementById('province');
-    const citySelect = document.getElementById('city');
-    const districtSelect = document.getElementById('district');
-    const villageSelect = document.getElementById('village');
-    const postalCodeSelect = document.getElementById('postalCode');
-    const detailAddress = document.getElementById('detailAddress');
-    const addressForm = document.getElementById('addressForm');
-    
 
-    
-    async function fetchData(endpoint) {
-        try {
-            const response = await fetch(`${BASE_URL}${endpoint}`);
-            const data = await response.json();
-            if (data.status === 200) {
-                return data.result;
+        <!-- Address Modal -->
+        <div id="addressModal"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+                <h2 class="text-lg font-semibold mb-4">Atur Alamat</h2>
+                <form id="addressForm" class="space-y-4">
+                    <!-- Province -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Provinsi</label>
+                        <select id="province"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                            <option value="">Pilih Provinsi</option>
+                        </select>
+                    </div>
+
+                    <!-- City -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Kota/Kabupaten</label>
+                        <select id="city"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
+                            disabled>
+                            <option value="">Pilih Kota/Kabupaten</option>
+                        </select>
+                    </div>
+
+                    <!-- District -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Kecamatan</label>
+                        <select id="district"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
+                            disabled>
+                            <option value="">Pilih Kecamatan</option>
+                        </select>
+                    </div>
+
+                    <!-- Village -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Desa/Kelurahan</label>
+                        <select id="village"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
+                            disabled>
+                            <option value="">Pilih Desa/Kelurahan</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Kode Pos</label>
+                        <select id="postalCode"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
+                            disabled>
+                            <option value="">Pilih Kode Pos</option>
+                        </select>
+                    </div>
+
+
+
+                    <!-- Detail Address -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Detail Alamat</label>
+                        <input type="text" id="detailAddress" placeholder="Masukkan nama jalan, nomor rumah, RT/RW"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500">
+                    </div>
+
+                    <!-- Loading Indicator -->
+                    <div id="loadingIndicator" class="hidden">
+                        <div class="flex items-center justify-center">
+                            <svg class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            <span class="ml-2">Memuat...</span>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex justify-end gap-4 pt-4">
+                        <button type="button" onclick="closeAddressModal()"
+                            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" id="submitButton"
+                            class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+                            Simpan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const BASE_URL = 'https://alamat.thecloudalert.com/api';
+        const RAJA_ONGKIR_URL = 'https://rajaongkir.komerce.id/api/v1/destination/domestic-destination';
+        const RAJA_ONGKIR_KEY = 'fWIRKxbJ9ce7bc45dbd6c261tW3rtR6K';
+        const addressModal = document.getElementById('addressModal');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const provinceSelect = document.getElementById('province');
+        const citySelect = document.getElementById('city');
+        const districtSelect = document.getElementById('district');
+        const villageSelect = document.getElementById('village');
+        const postalCodeSelect = document.getElementById('postalCode');
+        const detailAddress = document.getElementById('detailAddress');
+        const addressForm = document.getElementById('addressForm');
+
+
+
+        async function fetchData(endpoint) {
+            try {
+                const response = await fetch(`${BASE_URL}${endpoint}`);
+                const data = await response.json();
+                if (data.status === 200) {
+                    return data.result;
+                }
+                throw new Error(data.message || 'Failed to fetch data');
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return [];
             }
-            throw new Error(data.message || 'Failed to fetch data');
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            return [];
         }
-    }
-    
-    async function fetchPostalCodeId(postalCode) {
-    try {
-        const response = await fetch(`/api/proxy/postal-code?search=${postalCode}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('Postal Code Response:', data);
-        
-        if (data.meta?.status === 'success' && data.data?.length > 0) {
-            return data.data[0].id;
-        }
-        throw new Error('Postal code not found');
-    } catch (error) {
-        console.error('Error fetching postal code ID:', error);
-        return null;
-    }
-}
 
-    async function showLoading() {
-        loadingIndicator.classList.remove('hidden');
-    }
-    
-    function hideLoading() {
-        loadingIndicator.classList.add('hidden');
-    }
-    
-    // Initialize provinces on modal open
-    async function initializeProvinces() {
-        showLoading();
-        const provinces = await fetchData('/provinsi/get');
-        provinceSelect.innerHTML = '<option value="">Pilih Provinsi</option>';
-        provinces.forEach(province => {
-            provinceSelect.innerHTML += `<option value="${province.id}">${province.text}</option>`;
-        });
-        hideLoading();
-    }
-    
-    // Fetch cities when province is selected
-    provinceSelect.addEventListener('change', async function() {
-        const provinceId = this.value;
-        citySelect.innerHTML = '<option value="">Pilih Kota/Kabupaten</option>';
-        districtSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
-        villageSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
-        postalCodeSelect.innerHTML = '<option value="">Pilih Kode Pos</option>';
-        citySelect.disabled = !provinceId;
-        districtSelect.disabled = true;
-        villageSelect.disabled = true;
-        postalCodeSelect.disabled = true;
-    
-        if (provinceId) {
-            showLoading();
-            const cities = await fetchData(`/kabkota/get/?d_provinsi_id=${provinceId}`);
-            cities.forEach(city => {
-                citySelect.innerHTML += `<option value="${city.id}">${city.text}</option>`;
-            });
-            hideLoading();
-        }
-    });
-    
-    // Fetch districts when city is selected
-    citySelect.addEventListener('change', async function() {
-        const cityId = this.value;
-        districtSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
-        villageSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
-        
-        districtSelect.disabled = !cityId;
-        villageSelect.disabled = true;
-    
-        if (cityId) {
-            showLoading();
-            const districts = await fetchData(`/kecamatan/get/?d_kabkota_id=${cityId}`);
-            districts.forEach(district => {
-                districtSelect.innerHTML += `<option value="${district.id}">${district.text}</option>`;
-            });
-            hideLoading();
-        }
-    });
-    
-    // Fetch villages when district is selected
-    districtSelect.addEventListener('change', async function() {
-        const districtId = this.value;
-        villageSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
-        villageSelect.disabled = !districtId;
-    
-        if (districtId) {
-            showLoading();
-            const villages = await fetchData(`/kelurahan/get/?d_kecamatan_id=${districtId}`);
-            villages.forEach(village => {
-                villageSelect.innerHTML += `<option value="${village.id}">${village.text}</option>`;
-            });
-            hideLoading();
-        }
-    });
+        async function fetchPostalCodeId(postalCode) {
+            try {
+                const response = await fetch(`/api/proxy/postal-code?search=${postalCode}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
 
-    // Fetch poss when district is selected
-    villageSelect.addEventListener('change', async function() {
-        const cityId = citySelect.value; // Get the selected city ID
-        const districtId = districtSelect.value; // Get the selected district ID
-        console.log('Selected City ID:', cityId);
-        console.log('Selected District ID:', districtId);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-        postalCodeSelect.innerHTML = '<option value="">Pilih Kode Pos</option>';
-        postalCodeSelect.disabled = !cityId && districtId;
-    
-        if (cityId && districtId) {
-            showLoading();
-            const poss = await fetchData(`/kodepos/get/?d_kabkota_id=${cityId}&d_kecamatan_id=${districtId}`);
-            console.log('Fetched Postal Codes:', poss);
-            poss.forEach(pos => {
-                postalCodeSelect.innerHTML += `<option value="${pos.id}">${pos.text}</option>`;
-            });
-            hideLoading();
-        }
-    });
-    
-    // Form submission
-    addressForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Get selected values
-        const province = provinceSelect.options[provinceSelect.selectedIndex].text;
-        const city = citySelect.options[citySelect.selectedIndex].text;
-        const district = districtSelect.options[districtSelect.selectedIndex].text;
-        const village = villageSelect.options[villageSelect.selectedIndex].text;
-        const postalCode = postalCodeSelect.options[postalCodeSelect.selectedIndex].text;
-        const detail = detailAddress.value;
+                const data = await response.json();
+                console.log('Postal Code Response:', data);
 
-        console.log('Selected Values:', { province, city, district, village, postalCode, detail });
-    
-        // Validate all fields are filled
-        if (!provinceSelect.value || !citySelect.value || !districtSelect.value || !villageSelect.value || !postalCode || !detail) {
-            alert('Mohon lengkapi semua field alamat');
-            return;
-        }
-    
- 
-    
-        // Construct full address
-        const fullAddress = `${detail}, ${village}, ${district}, ${city}, ${province} ${postalCode}`;
-        console.log('Full Address:', fullAddress);
-        try {
-            showLoading();
-            // Send to server
-            const idPostalCode = await fetchPostalCodeId(postalCode);
-
-            const response = await fetch('/update-address', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    fullAddress,
-                    address: {
-                        detail,
-                        village,
-                        district,
-                        city,
-                        province,
-                        postalCode,
-                        idPostalCode 
-                    }
-                })
-            });
-    
-            if (!response.ok) throw new Error('Failed to update address');
-    
-            // Update the displayed address on the page
-            const addressDisplay = document.querySelector('[data-address-display]');
-            if (addressDisplay) {
-                addressDisplay.textContent = fullAddress;
+                if (data.meta?.status === 'success' && data.data?.length > 0) {
+                    return data.data[0].id;
+                }
+                throw new Error('Postal code not found');
+            } catch (error) {
+                console.error('Error fetching postal code ID:', error);
+                return null;
             }
-    
-            // Close modal and show success message
-            closeAddressModal();
-            alert('Alamat berhasil diperbarui');
-        } catch (error) {
-            console.error('Error updating address:', error);
-            alert('Gagal memperbarui alamat. Silakan coba lagi.');
-        } finally {
+        }
+
+        async function showLoading() {
+            loadingIndicator.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingIndicator.classList.add('hidden');
+        }
+
+        // Initialize provinces on modal open
+        async function initializeProvinces() {
+            showLoading();
+            const provinces = await fetchData('/provinsi/get');
+            provinceSelect.innerHTML = '<option value="">Pilih Provinsi</option>';
+            provinces.forEach(province => {
+                provinceSelect.innerHTML += `<option value="${province.id}">${province.text}</option>`;
+            });
             hideLoading();
         }
-    });
-    
-    function openAddressModal() {
-        addressModal.classList.remove('hidden');
-        initializeProvinces();
-    }
-    
-    function closeAddressModal() {
-        addressModal.classList.add('hidden');
-        // Reset form
-        addressForm.reset();
-        citySelect.disabled = true;
-        districtSelect.disabled = true;
-        villageSelect.disabled = true;
-        postalCodeSelect.disabled = true;
-    }
+
+        // Fetch cities when province is selected
+        provinceSelect.addEventListener('change', async function () {
+            const provinceId = this.value;
+            citySelect.innerHTML = '<option value="">Pilih Kota/Kabupaten</option>';
+            districtSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+            villageSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+            postalCodeSelect.innerHTML = '<option value="">Pilih Kode Pos</option>';
+            citySelect.disabled = !provinceId;
+            districtSelect.disabled = true;
+            villageSelect.disabled = true;
+            postalCodeSelect.disabled = true;
+
+            if (provinceId) {
+                showLoading();
+                const cities = await fetchData(`/kabkota/get/?d_provinsi_id=${provinceId}`);
+                cities.forEach(city => {
+                    citySelect.innerHTML += `<option value="${city.id}">${city.text}</option>`;
+                });
+                hideLoading();
+            }
+        });
+
+        // Fetch districts when city is selected
+        citySelect.addEventListener('change', async function () {
+            const cityId = this.value;
+            districtSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+            villageSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+
+            districtSelect.disabled = !cityId;
+            villageSelect.disabled = true;
+
+            if (cityId) {
+                showLoading();
+                const districts = await fetchData(`/kecamatan/get/?d_kabkota_id=${cityId}`);
+                districts.forEach(district => {
+                    districtSelect.innerHTML += `<option value="${district.id}">${district.text}</option>`;
+                });
+                hideLoading();
+            }
+        });
+
+        // Fetch villages when district is selected
+        districtSelect.addEventListener('change', async function () {
+            const districtId = this.value;
+            villageSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+            villageSelect.disabled = !districtId;
+
+            if (districtId) {
+                showLoading();
+                const villages = await fetchData(`/kelurahan/get/?d_kecamatan_id=${districtId}`);
+                villages.forEach(village => {
+                    villageSelect.innerHTML += `<option value="${village.id}">${village.text}</option>`;
+                });
+                hideLoading();
+            }
+        });
+
+        // Fetch poss when district is selected
+        villageSelect.addEventListener('change', async function () {
+            const cityId = citySelect.value; // Get the selected city ID
+            const districtId = districtSelect.value; // Get the selected district ID
+            console.log('Selected City ID:', cityId);
+            console.log('Selected District ID:', districtId);
+
+            postalCodeSelect.innerHTML = '<option value="">Pilih Kode Pos</option>';
+            postalCodeSelect.disabled = !cityId && districtId;
+
+            if (cityId && districtId) {
+                showLoading();
+                const poss = await fetchData(`/kodepos/get/?d_kabkota_id=${cityId}&d_kecamatan_id=${districtId}`);
+                console.log('Fetched Postal Codes:', poss);
+                poss.forEach(pos => {
+                    postalCodeSelect.innerHTML += `<option value="${pos.id}">${pos.text}</option>`;
+                });
+                hideLoading();
+            }
+        });
+
+        // Form submission
+        addressForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Get selected values
+            const province = provinceSelect.options[provinceSelect.selectedIndex].text;
+            const city = citySelect.options[citySelect.selectedIndex].text;
+            const district = districtSelect.options[districtSelect.selectedIndex].text;
+            const village = villageSelect.options[villageSelect.selectedIndex].text;
+            const postalCode = postalCodeSelect.options[postalCodeSelect.selectedIndex].text;
+            const detail = detailAddress.value;
+
+            console.log('Selected Values:', { province, city, district, village, postalCode, detail });
+
+            // Validate all fields are filled
+            if (!provinceSelect.value || !citySelect.value || !districtSelect.value || !villageSelect.value || !postalCode || !detail) {
+                alert('Mohon lengkapi semua field alamat');
+                return;
+            }
+
+
+
+            // Construct full address
+            const fullAddress = `${detail}, ${village}, ${district}, ${city}, ${province} ${postalCode}`;
+            console.log('Full Address:', fullAddress);
+            try {
+                showLoading();
+                // Send to server
+                const idPostalCode = await fetchPostalCodeId(postalCode);
+
+                const response = await fetch('/update-address', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fullAddress,
+                        address: {
+                            detail,
+                            village,
+                            district,
+                            city,
+                            province,
+                            postalCode,
+                            idPostalCode
+                        }
+                    })
+                });
+
+                if (!response.ok) throw new Error('Failed to update address');
+
+                // Update the displayed address on the page
+                const addressDisplay = document.querySelector('[data-address-display]');
+                if (addressDisplay) {
+                    addressDisplay.textContent = fullAddress;
+                }
+
+                // Close modal and show success message
+                closeAddressModal();
+                alert('Alamat berhasil diperbarui');
+            } catch (error) {
+                console.error('Error updating address:', error);
+                alert('Gagal memperbarui alamat. Silakan coba lagi.');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        function openAddressModal() {
+            addressModal.classList.remove('hidden');
+            initializeProvinces();
+        }
+
+        function closeAddressModal() {
+            addressModal.classList.add('hidden');
+            // Reset form
+            addressForm.reset();
+            citySelect.disabled = true;
+            districtSelect.disabled = true;
+            villageSelect.disabled = true;
+            postalCodeSelect.disabled = true;
+        }
     </script>
 
     <!-- Footer -->
@@ -399,5 +443,6 @@
             <p class="text-gray-400">&copy; 2025 Kilangan Tebu Uni Des. All rights reserved.</p>
         </div>
     </footer>
-</body>
-</html>
+    </body>
+
+    </html>

@@ -1,176 +1,257 @@
 <%- include('../layout/header') %>
 
-    <div class="max-w-7xl mx-auto px-4 py-10">
-        <!-- Order Info Card -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-            <div class="border-b border-gray-200 p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-900">Order #<%= order.id %>
-                        </h1>
-                        <p class="text-sm text-gray-500 mt-1">
-                            Tanggal Order: <%= new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric' ,
-                                month: 'long' , year: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
-                        </p>
-                    </div>
-                    <div class="text-right">
-                        <span class="px-3 py-1 rounded-full text-sm font-medium
-                            <% if (order.status === 'delivered') { %>
-                                bg-green-100 text-green-800
-                            <% } else if (order.status === 'processing' || order.status === 'shipped') { %>
-                                bg-blue-100 text-blue-800
-                            <% } else if (order.status === 'cancelled') { %>
-                                bg-red-100 text-red-800
-                            <% } else { %>
-                                bg-yellow-100 text-yellow-800
-                            <% } %>
-                        ">
-                            <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
-                        </span>
-                        <p class="text-sm text-gray-500 mt-2">
-                            Status Pembayaran:
-                            <span class="font-medium
-                                <% if (order.paymentStatus === 'paid') { %>
-                                    text-green-600
-                                <% } else if (order.paymentStatus === 'pending') { %>
-                                    text-yellow-600
-                                <% } else { %>
-                                    text-red-600
-                                <% } %>
-                            ">
-                                <%= order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) %>
-                            </span>
-                        </p>
-                    </div>
+<div class="max-w-7xl mx-auto px-4 py-10">
+    <!-- Order Info Card -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div class="border-b border-gray-200 p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Order #<%= order.id %></h1>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Tanggal Order: <%= new Date(order.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                    </p>
+                </div>
+                <div class="text-right">
+                    <span class="px-3 py-1 rounded-full text-sm font-medium
+                        <% if (order.status === 'Selesai') { %>
+                            bg-green-100 text-green-800
+                        <% } else if (order.status === 'Dikemas' || order.status === 'Dikirim') { %>
+                            bg-blue-100 text-blue-800
+                        <% } else if (order.status === 'Dibatalkan') { %>
+                            bg-red-100 text-red-800
+                        <% } else { %>
+                            bg-yellow-100 text-yellow-800
+                        <% } %>
+                    ">
+                        <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+                    </span>
                 </div>
             </div>
 
-            <!-- Customer Info -->
-            <div class="border-b border-gray-200 p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h3 class="text-lg font-semibold mb-2">Informasi Pelanggan</h3>
-                        <p class="text-gray-600">
-                            <%= user.fullName %>
-                        </p>
-                        <p class="text-gray-600">
-                            <%= user.email %>
-                        </p>
+            <!-- Status Information Box -->
+            <div class="mt-4 p-4 rounded-lg
+                <% if (order.status === 'Belum Bayar') { %>
+                    bg-yellow-50
+                <% } else if (order.status === 'Dikemas') { %>
+                    bg-blue-50
+                <% } else if (order.status === 'Dikirim') { %>
+                    bg-indigo-50
+                <% } else if (order.status === 'Selesai') { %>
+                    bg-green-50
+                <% } else if (order.status === 'Dibatalkan') { %>
+                    bg-red-50
+                <% } %>
+            ">
+                <% if (order.status === 'Belum Bayar') { %>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-sm text-yellow-700">Mohon selesaikan pembayaran sebelum <span class="font-semibold"><%= new Date(order.paymentDueDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) %></span></p>
                     </div>
-                    <div>
-                        <h3 class="text-lg font-semibold mb-2">Alamat Pengiriman</h3>
-                        <p class="text-gray-600 whitespace-pre-line">
-                            <%= order.shippingAddress %>
-                        </p>
+                <% } else if (order.status === 'Dikemas') { %>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                        </svg>
+                        <p class="text-sm text-blue-700">Pesanan Anda sedang disiapkan oleh admin. Kami akan segera mengirimkan nomor resi.</p>
                     </div>
-                </div>
-            </div>
-
-            <!-- Order Items -->
-            <div class="p-6">
-                <h3 class="text-lg font-semibold mb-4">Detail Pesanan</h3>
-                <div class="space-y-4">
-                    <% order.OrderItems.forEach(function(item) { %>
-                        <div class="flex items-center justify-between py-4 border-b last:border-0">
-                            <div class="flex items-center space-x-4">
-                                <img src="<%= item.Product.image %>" alt="<%= item.Product.name %>"
-                                    class="w-16 h-16 object-cover rounded-lg">
-                                <div>
-                                    <h4 class="font-medium text-gray-900">
-                                        <%= item.Product.name %>
-                                    </h4>
-                                    <p class="text-sm text-gray-500">Qty: <%= item.quantity %>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="font-medium text-gray-900">
-                                    Rp <%= (item.price * item.quantity).toLocaleString('id-ID') %>
-                                </p>
-                                <p class="text-sm text-gray-500">
-                                    Rp <%= item.price.toLocaleString('id-ID') %> / item
-                                </p>
-                            </div>
+                <% } else if (order.status === 'Dikirim') { %>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                            </svg>
+                            <p class="text-sm text-indigo-700">Pesanan Anda sedang dalam pengiriman</p>
                         </div>
-                        <% }); %>
-                </div>
+                        <div class="bg-white p-3 rounded-md">
+                            <p class="text-sm font-medium text-gray-700">Nomor Resi: <%= order.resi %></p>
+                            <p class="text-sm text-gray-600">Kurir: <%= order.shippingService %></p>
+                        </div>
+                    </div>
+                <% } else if (order.status === 'Selesai') { %>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="text-sm text-green-700">Pesanan telah selesai. Terima kasih telah berbelanja!</p>
+                    </div>
+                <% } else if (order.status === 'Dibatalkan') { %>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <div>
+                            <p class="text-sm text-red-700">Pesanan dibatalkan</p>
+                            <p class="text-sm text-red-600 mt-1">Alasan: <%= order.cancellationReason %></p>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
 
-                <!-- Order Summary -->
-                <div class="mt-6 border-t border-gray-200 pt-6">
-                    <div class="flex justify-between mb-2">
-                        <span class="text-gray-600">Subtotal</span>
-                        <span class="font-medium">Rp <%= order.totalAmount.toLocaleString('id-ID') %></span>
-                    </div>
-                    <div class="flex justify-between mb-2">
-                        <span class="text-gray-600">Biaya Pengiriman</span>
-                        <span class="font-medium">Rp 0</span>
-                    </div>
-                    <div class="flex justify-between pt-4 border-t border-gray-200">
-                        <span class="text-lg font-semibold">Total</span>
-                        <span class="text-lg font-semibold">Rp <%= order.totalAmount.toLocaleString('id-ID') %></span>
-                    </div>
+        <div class="border-b border-gray-200 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Informasi Pelanggan</h3>
+                    <p class="text-gray-600">
+                        <%= user.fullName %>
+                    </p>
+                    <p class="text-gray-600">
+                        <%= user.email %>
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Alamat Pengiriman</h3>
+                    <p class="text-gray-600 whitespace-pre-line">
+                        <%= order.shippingAddress %>
+                    </p>
                 </div>
             </div>
         </div>
 
+        <!-- Order Items -->
+        <div class="p-6">
+            <h3 class="text-lg font-semibold mb-4">Detail Pesanan</h3>
+            <div class="space-y-4">
+                <% order.OrderItems.forEach(function(item) { %>
+                    <div class="flex items-center justify-between py-4 border-b last:border-0">
+                        <div class="flex items-center space-x-4">
+                            <img src="<%= item.Product.image %>" alt="<%= item.Product.name %>"
+                                class="w-16 h-16 object-cover rounded-lg">
+                            <div>
+                                <h4 class="font-medium text-gray-900">
+                                    <%= item.Product.name %>
+                                </h4>
+                                <p class="text-sm text-gray-500">Qty: <%= item.quantity %>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium text-gray-900">
+                                Rp <%= (item.price * item.quantity).toLocaleString('id-ID') %>
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                Rp <%= item.price.toLocaleString('id-ID') %> / item
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="mt-6 border-t border-gray-200 pt-6">
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Subtotal</span>
+                    <span class="font-medium">Rp <%= order.totalAmount.toLocaleString('id-ID') %></span>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-600">Biaya Pengiriman</span>
+                    <span class="font-medium">Rp <%= order.shippingCost.toLocaleString('id-ID') %></span>
+                </div>
+                <div class="flex justify-between pt-4 border-t border-gray-200">
+                    <span class="text-lg font-semibold">Total</span>
+                    <span class="text-lg font-semibold">Rp <%= order.totalAmount.toLocaleString('id-ID') %></span>
+                </div>
+            </div>
+        </div>
         <!-- Action Buttons -->
-        <div class="flex justify-between items-center">
-            <a href="/pesanan" class="text-gray-600 hover:text-gray-900 flex items-center gap-2">
+        <div class="flex justify-between items-center mt-6 p-6 border-t border-gray-200">
+            <a href="/orders" class="text-gray-600 hover:text-gray-900 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                        clip-rule="evenodd" />
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                 </svg>
                 Kembali ke Daftar Pesanan
             </a>
             <div class="flex items-center gap-4">
-                <% if (order.status === 'pending') { %>
+                <% if (order.status === 'Belum Bayar') { %>
                     <button onclick="cancelOrder(<%= order.id %>)"
                         class="py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                         Batalkan Pesanan
                     </button>
-                <% } %>
-                <% if (order.paymentStatus === 'pending') { %>
                     <a href="/payment/<%= order.id %>"
                         class="py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                         Bayar Sekarang
+                    </a>
+                <% } else if (order.status === 'Dikirim') { %>
+                    <button onclick="confirmDelivery(<%= order.id %>)"
+                        class="py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                        Pesanan Diterima
+                    </button>
+                <% } else if (order.status === 'Selesai') { %>
+                    <a href="/products"
+                        class="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        Beli Lagi
                     </a>
                 <% } %>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Footer -->
-    <%- include('../layout/footer') %>
+<%- include('../layout/footer') %>
 
-        <script>
-            async function cancelOrder(orderId) {
-                if (!confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')) {
-                    return;
-                }
+<script>
+    async function cancelOrder(orderId) {
+        if (!confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')) {
+            return;
+        }
 
-                try {
-                    const response = await fetch(`/orders/${orderId}/cancel`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    });
+        try {
+            const response = await fetch(`/orders/${orderId}/update-payment-status`, {
+                method: 'POST',
+                headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Jika menggunakan token
+                    },
+                body: JSON.stringify({
+                    paymentStatus: "Dibatalkan"
+                })
+            });
 
-                    const data = await response.json();
+            const data = await response.json();
 
-                    if (response.ok) {
-                        alert(data.message);
-                        window.location.reload();
-                    } else {
-                        alert(data.message || 'Error cancelling order');
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Error cancelling order');
-                }
+            if (response.ok) {
+                alert(data.message);
+                window.location.reload();
+            } else {
+                alert(data.message || 'Error membatalkan pesanan');
             }
-        </script>
-        </body>
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error membatalkan pesanan');
+        }
+    }
 
-        </html>
+    async function confirmDelivery(orderId) {
+        if (!confirm('Apakah Anda sudah menerima pesanan ini?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/orders/${orderId}/update-payment-status`, {
+                method: 'POST',
+                headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Jika menggunakan token
+                    },
+                body: JSON.stringify({
+                    paymentStatus: "Selesai"
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message);
+                window.location.reload();
+            } else {
+                alert(data.message || 'Error mengkonfirmasi penerimaan');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error mengkonfirmasi penerimaan');
+        }
+    }
+</script>

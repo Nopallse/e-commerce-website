@@ -110,6 +110,9 @@ class CartController {
         where: { id: req.user.id },
       });
 
+      if (!user.postalCode){
+        return res.redirect("/my-account");
+      }
       // Get or create cart
       let [cart] = await Cart.findOrCreate({
         where: { userId: req.user.id },
@@ -163,8 +166,7 @@ class CartController {
         origin: "49287",
         destination: user.idPostalCode,
         weight: "1000",
-        courier:
-          "jne:sicepat:ide:ninja:tiki:lion:anteraja:ncs:rex:rpx:sentral:star:wahana:dse",
+        courier: "jne:sicepat:ide:ninja",
         price: "lowest",
       }).toString();
 
@@ -188,7 +190,7 @@ class CartController {
           return [];
         });
 
-      console.log(shippingServices,">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+      console.log(shippingServices, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
       res.render("user/order-confirmation", {
         cartItems,
@@ -215,6 +217,7 @@ class CartController {
           .status(401)
           .json({ message: "Please log in to add items to the cart" });
       }
+      console.log(req.user);
 
       const { productId, quantity } = req.body;
 
@@ -322,11 +325,7 @@ class CartController {
   }
 
   async checkout(req, res) {
-
-
-    
     const t = await db.transaction();
-
 
     try {
       const isLoggedIn = req.user ? true : false;
@@ -335,7 +334,8 @@ class CartController {
       }
       // Get user info
       const user = await User.findOne({
-        where: { id: req.user.id }});
+        where: { id: req.user.id },
+      });
 
       const cart = await Cart.findOne({
         where: { userId: req.user.id },
@@ -346,7 +346,6 @@ class CartController {
           },
         ],
       });
-
 
       // Get cart items with product details
       const cartItems = await CartItem.findAll({
@@ -373,7 +372,6 @@ class CartController {
       const shippingFee = parseInt(shippingCost, 10);
 
       // Find user's cart and items
-     
 
       if (!cart || cart.CartItems.length === 0) {
         return res.status(400).json({ message: "Cart is empty" });
@@ -386,7 +384,7 @@ class CartController {
 
       const totalAmount = productTotal + shippingFee;
 
-      const shippingAddress = `${user.addressDetail}, ${user.village}, ${user.district}, ${user.city}, ${user.province}, ${user.postalCode}`
+      const shippingAddress = `${user.addressDetail}, ${user.village}, ${user.district}, ${user.city}, ${user.province}, ${user.postalCode}`;
       // Create order
       const order = await Order.create(
         {
@@ -395,8 +393,7 @@ class CartController {
           shippingCost: shippingFee,
           shippingService: parsedShipping.name,
           shippingAddress: shippingAddress,
-          status: "pending",
-          paymentStatus: "pending",
+          status: "Belum Bayar",
         },
         { transaction: t }
       );
@@ -451,13 +448,16 @@ class CartController {
 
       // Initialize Midtrans Snap for Development
       console.log("Initializing Midtrans in sandbox mode...");
-      console.log("MIDTRANS_SERVER_KEY_SANDBOX:", process.env.MIDTRANS_SERVER_KEY_SANDBOX);
+      console.log(
+        "MIDTRANS_SERVER_KEY_SANDBOX:",
+        process.env.MIDTRANS_SERVER_KEY_SANDBOX
+      );
       let snap = new midtransClient.Snap({
         // Set to true if you want Production Environment (accept real transaction).
         isProduction: false,
         serverKey: process.env.MIDTRANS_SERVER_KEY_SANDBOX,
       });
-      
+
       console.log("Snap instance created:", snap);
 
       const orderId = `ORDER-${order.id}-${Date.now()}`;
@@ -491,19 +491,17 @@ class CartController {
       await order.update({
         midtransOrderId: orderId,
         paymentToken: transaction.token,
-
       });
 
       console.log("Transaction created successfully:", transaction);
 
-
-      res.render('user/payment', {
+      res.render("user/payment", {
         orderId: order.id,
         paymentToken: transaction.token,
         isLoggedIn: isLoggedIn,
         user,
-        cartCount
-    });
+        cartCount,
+      });
     } catch (error) {
       if (t.finished !== "commit") {
         await t.rollback();

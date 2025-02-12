@@ -15,9 +15,8 @@ router.use(verifyToken);
 
 router.post('/update-address', userController.updateAddress);
 
-
 router.get('/cart', cartController.getCart);
-router.post('/cart/add', cartController.addToCart);
+router.post('/cart/add',cartController.addToCart);
 router.put('/cart/update/:id', cartController.updateCartItem);
 router.delete('/cart/remove/:id', cartController.removeCartItem);
 router.post('/cart/checkout', cartController.checkout);

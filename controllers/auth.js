@@ -4,7 +4,7 @@ const { User } = require('../models');
 
 const register = async (req, res) => {
   try {
-    const { username, email, password, fullName, address, phone } = req.body;
+    const {  email, password, fullName, address, phone } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
@@ -17,7 +17,6 @@ const register = async (req, res) => {
 
     // Create user
     const user = await User.create({
-      username,
       email,
       password: hashedPassword,
       fullName,
@@ -90,5 +89,6 @@ const logout = (req, res) => {
     res.status(500).json({ message: 'Error logging out.' });
   }
 };
+
 
 module.exports = { register, login, logout };

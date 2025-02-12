@@ -1,0 +1,238 @@
+<!-- views/admin/reports/yearly-orders.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yearly Orders Report - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/output.css" rel="stylesheet">
+    <script src="./node_modules/preline/dist/preline.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+
+<body class="bg-gray-50 dark:bg-slate-900">
+    <!-- Sidebar -->
+    <%- include('../../layout/sidebar') %>
+
+    <!-- Content -->
+    <div class="w-full pt-10 px-4 sm:px-6 md:px-8 lg:pl-72">
+        <!-- Page Heading -->
+        <header class="mb-8">
+            <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">Yearly Orders Report</h1>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">View and analyze annual order statistics</p>
+        </header>
+
+        <!-- Year Selector -->
+        <div class="bg-white p-4 rounded-xl shadow-sm mb-6 dark:bg-gray-800">
+            <form action="/admin/reports/yearly" method="GET" class="flex items-center gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">Select Year</label>
+                    <select 
+                        name="year" 
+                        class="py-2 px-3 block w-full border-gray-200 rounded-md text-sm focus:border-orange-500 focus:ring-orange-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400">
+                        <% for(let y = new Date().getFullYear(); y >= 2020; y--) { %>
+                            <option value="<%= y %>" <%= selectedYear == y ? 'selected' : '' %>><%= y %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <button type="submit"
+                    class="mt-6 py-2 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-orange-500 text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all text-sm dark:focus:ring-offset-gray-800">
+                    Generate Report
+                </button>
+            </form>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <!-- Total Orders -->
+            <div class="bg-white rounded-xl shadow-sm p-4 dark:bg-gray-800">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-orange-100 rounded-lg p-3 dark:bg-orange-500/20">
+                        <svg class="h-6 w-6 text-orange-600 dark:text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Orders</h3>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200"><%= yearlyStats.totalOrders %></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            <% if(yearlyStats.orderGrowth > 0) { %>
+                                <span class="text-green-600">↑ <%= yearlyStats.orderGrowth %>%</span>
+                            <% } else { %>
+                                <span class="text-red-600">↓ <%= Math.abs(yearlyStats.orderGrowth) %>%</span>
+                            <% } %>
+                            vs last year
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Revenue -->
+            <div class="bg-white rounded-xl shadow-sm p-4 dark:bg-gray-800">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-green-100 rounded-lg p-3 dark:bg-green-500/20">
+                        <svg class="h-6 w-6 text-green-600 dark:text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</h3>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200">Rp.<%= yearlyStats.totalRevenue.toLocaleString() %></p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            <% if(yearlyStats.revenueGrowth > 0) { %>
+                                <span class="text-green-600">↑ <%= yearlyStats.revenueGrowth %>%</span>
+                            <% } else { %>
+                                <span class="text-red-600">↓ <%= Math.abs(yearlyStats.revenueGrowth) %>%</span>
+                            <% } %>
+                            vs last year
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Average Order Value -->
+            <div class="bg-white rounded-xl shadow-sm p-4 dark:bg-gray-800">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-blue-100 rounded-lg p-3 dark:bg-blue-500/20">
+                        <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">Average Order Value</h3>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200">Rp.<%= yearlyStats.averageOrderValue.toLocaleString() %></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completion Rate -->
+            <div class="bg-white rounded-xl shadow-sm p-4 dark:bg-gray-800">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-purple-100 rounded-lg p-3 dark:bg-purple-500/20">
+                        <svg class="h-6 w-6 text-purple-600 dark:text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-sm font-medium text-gray-600 dark:text-gray-400">Completion Rate</h3>
+                        <p class="text-2xl font-semibold text-gray-900 dark:text-gray-200"><%= yearlyStats.completionRate %>%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Orders Trend -->
+        <div class="bg-white p-4 rounded-xl shadow-sm dark:bg-gray-800">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Monthly Orders Trend</h2>
+            <canvas id="monthlyOrdersChart" height="100"></canvas>
+        </div>
+
+        <!-- Top Products Table -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6 dark:bg-gray-800">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Top Selling Products</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Product Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Units Sold</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Revenue</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase dark:text-gray-400">Order Count</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <% topProducts.forEach(product => { %>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                <%= product.name %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                                <%= product.quantity %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                                Rp.<%= product.revenue.toLocaleString() %>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
+                                <%= product.orderCount %>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Preline
+        window.addEventListener('load', function () {
+            window.HSStaticMethods.autoInit();
+        });
+
+        // Monthly Orders Trend Chart
+        const monthlyCtx = document.getElementById('monthlyOrdersChart').getContext('2d');
+        new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: <%- JSON.stringify(monthlyStats.labels) %>,
+                datasets: [{
+                    label: 'Number of Orders',
+                    data: <%- JSON.stringify(monthlyStats.data) %>,
+                    borderColor: 'rgb(249, 115, 22)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+        // Status Distribution Chart
+        const statusCtx = document.getElementById('statusDistributionChart').getContext('2d');
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: <%- JSON.stringify(Object.keys(statusDistribution)) %>,
+                datasets: [{
+                    data: <%- JSON.stringify(Object.values(statusDistribution)) %>,
+                    backgroundColor: [
+                        'rgba(34, 197, 94, 0.2)',  // Green for completed
+                        'rgba(234, 179, 8, 0.2)',  // Yellow for processing
+                        'rgba(239, 68, 68, 0.2)',  // Red for cancelled
+                        'rgba(59, 130, 246, 0.2)'   // Blue for shipped
+                    ],
+                    borderColor: [
+                        'rgb(34, 197, 94)',
+                        'rgb(234, 179, 8)',
+                        'rgb(239, 68, 68)',
+                        'rgb(59, 130, 246)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+    <script src="/preline/preline.js"></script>
+    <script>
+        // Initialize Preline
+        window.addEventListener('load', function () {
+            window.HSStaticMethods.autoInit();
+        });
+    </script>
+</body>

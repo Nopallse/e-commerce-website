@@ -77,6 +77,8 @@ class OrderController {
         ],
       });
 
+      console.log(order);
+
       if (!order) {
         return res.status(404).send("Order not found");
       }
@@ -90,7 +92,6 @@ class OrderController {
         where: { userId: req.user.id },
       });
 
-      console.log(cart);
 
       // Get cart items with product details
       const cartItems = await CartItem.findAll({
@@ -103,16 +104,13 @@ class OrderController {
         ],
       });
 
-      console.log(cartItems);
-
-      // Calculate total price
-      const totalPrice = cartItems.reduce((sum, item) => {
-        return sum + item.Product.price * item.quantity;
-      }, 0);
-
       // Get total items count for header
       const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
+      const data = {
+        order,
+        user,
+        cartCount,
+      }
       res.render("user/orders-detail", {
         order,
         user,
@@ -124,6 +122,7 @@ class OrderController {
       res.status(500).send("Error fetching order details");
     }
   }
+  
 
   async getOrderConfirmation(req, res) {
     try {
@@ -193,7 +192,7 @@ class OrderController {
         return res.status(404).json({ message: "Order not found" });
       }
 
-      await order.update({ paymentStatus: paymentStatus });
+      await order.update({ status: paymentStatus });
       res.json({ message: "Payment status updated" });
     } catch (error) {
       console.error("Error updating payment status:", error);

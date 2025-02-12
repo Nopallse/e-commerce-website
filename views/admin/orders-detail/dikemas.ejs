@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Order #<%= order.id %> - Dikemas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 dark:bg-slate-900">
+  <%- include('../../layout/sidebar') %>
+  <div class="w-full pt-10 px-4 sm:px-6 md:px-8 lg:pl-72">
+    <!-- Order Header -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-800 sm:text-3xl dark:text-white">
+        Detail Order #<%= order.id %>
+      </h1>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+        <%= new Date(order.createdAt).toLocaleString('id-ID', { 
+          dateStyle: 'full', 
+          timeStyle: 'short' 
+        }) %>
+      </p>
+    </div>
+
+    <!-- Tracking Number Input Form -->
+    <div class="mb-8">
+      <form action="/admin/order/<%= order.id %>/update-resi" method="POST" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Update Status Pengiriman</h2>
+        <div class="space-y-4">
+          <div>
+            <label for="tracking_number" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Nomor Resi</label>
+            <input 
+              type="text" 
+              name="resi" 
+              id="tracking_number" 
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm dark:bg-slate-700 dark:border-gray-600 dark:text-white"
+              placeholder="Masukkan nomor resi pengiriman"
+            >
+          </div>
+          <button 
+            type="submit"
+            class="w-full py-3 px-4 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all text-sm"
+          >
+            Update Status ke Dikirim
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Order Information -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
+        <div class="space-y-4">
+          <div>
+            <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">Informasi Order</h2>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Status Order</p>
+                <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 mt-1">
+                  <%= order.status %>
+                </span>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Total Pembayaran</p>
+                <p class="font-medium text-gray-800 dark:text-white">
+                  Rp <%= parseInt(order.totalAmount).toLocaleString('id-ID') %>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4 dark:border-gray-700">
+
+          <!-- Customer Info -->
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">Informasi Pelanggan</h3>
+            <div class="space-y-2">
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                <span class="font-medium">Nama:</span> <%= order.User.fullName %>
+              </p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                <span class="font-medium">Email:</span> <%= order.User.email %>
+              </p>
+            </div>
+          </div>
+
+          <hr class="my-4 dark:border-gray-700">
+
+          <!-- Shipping Info -->
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-3">Informasi Pengiriman</h3>
+            <div class="space-y-2">
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                <span class="font-medium">Alamat:</span><br>
+                <%= order.shippingAddress %>
+              </p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                <span class="font-medium">Kurir:</span> <%= order.shippingService %>
+              </p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">
+                <span class="font-medium">Ongkos Kirim:</span> 
+                Rp <%= parseInt(order.shippingCost).toLocaleString('id-ID') %>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Items -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Produk</h2>
+        <div class="space-y-4">
+          <!-- Scrollable product list -->
+          <div class="max-h-[400px] overflow-y-auto pr-2">
+            <% order.OrderItems.forEach(item => { %>
+              <div class="flex gap-4 py-4 border-b last:border-b-0 dark:border-gray-700">
+                <img 
+                  src="<%= item.Product.image %>" 
+                  alt="<%= item.Product.name %>"
+                  class="w-20 h-20 object-cover rounded-lg"
+                >
+                <div class="flex-1">
+                  <h4 class="font-medium text-gray-800 dark:text-white"><%= item.Product.name %></h4>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <%= item.quantity %> x Rp <%= parseInt(item.price).toLocaleString('id-ID') %>
+                  </p>
+                  <p class="text-sm font-medium text-gray-800 dark:text-white mt-2">
+                    Subtotal: Rp <%= (item.quantity * parseInt(item.price)).toLocaleString('id-ID') %>
+                  </p>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+
+          <!-- Total Summary -->
+          <div class="border-t pt-4 mt-6 dark:border-gray-700">
+            <div class="space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600 dark:text-gray-400">Subtotal</span>
+                <span class="font-medium text-gray-800 dark:text-white">
+                  Rp <%= parseInt(order.totalAmount).toLocaleString('id-ID') %>
+                </span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600 dark:text-gray-400">Ongkos Kirim</span>
+                <span class="font-medium text-gray-800 dark:text-white">
+                  Rp <%= parseInt(order.shippingCost).toLocaleString('id-ID') %>
+                </span>
+              </div>
+              <div class="flex justify-between text-base font-medium pt-2 border-t dark:border-gray-700">
+                <span class="text-gray-900 dark:text-white">Total</span>
+                <span class="text-gray-900 dark:text-white">
+                  Rp <%= (parseInt(order.totalAmount) + parseInt(order.shippingCost)).toLocaleString('id-ID') %>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/preline@2.0.3/dist/preline.min.js"></script>
+</body>
+</html>

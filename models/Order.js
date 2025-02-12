@@ -33,19 +33,22 @@ Order.init(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled'),
-      defaultValue: 'pending',
+      type: DataTypes.ENUM(
+        "Belum Bayar",
+        "Dikemas",
+        "Dikirim",
+        "Selesai",
+        "Dibatalkan"
+      ),
+      defaultValue: "Belum Bayar",
     },
     shippingService: DataTypes.STRING,
     shippingCost: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
+    resi: DataTypes.STRING,
     shippingAddress: DataTypes.TEXT,
-    paymentStatus: {
-      type: DataTypes.ENUM('pending', 'paid', 'failed'),
-      defaultValue: 'pending',
-    },
   },
   {
     sequelize: db,

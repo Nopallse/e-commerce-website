@@ -9,7 +9,7 @@ const Order = require("./Order");
 const OrderItem = require("./OrderItem");
 const Product = require("./Product");
 
-// Associations
+
 User.hasMany(Cart, { foreignKey: "userId" });
 Cart.belongsTo(User, { foreignKey: "userId" });
 

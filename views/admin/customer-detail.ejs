@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="/output.css" rel="stylesheet">
+    <script src="./node_modules/preline/dist/preline.js"></script>
+</head>
+
+<body class="bg-gray-50 dark:bg-slate-900">
+    <%- include('../layout/sidebar') %>
+
+    <!-- Main content -->
+    <div class="w-full pt-10 px-4 sm:px-6 md:px-8 lg:ps-72">
+        <!-- Page header -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">User Details</h1>
+            <a href="/admin/users" class="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-orange-600 text-white hover:bg-orange-700">
+                Back to Users
+            </a>
+        </div>
+
+        <!-- User Details Card -->
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden dark:bg-slate-900 dark:border-gray-700">
+            <div class="p-6">
+                <!-- Basic Information -->
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Basic Information</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Full Name</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.fullName %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Email</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.email %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Phone</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.phone %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Role</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.role %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="mb-6">
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Address Information</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Address Detail</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.addressDetail %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Village</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.village %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">District</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.district %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">City</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.city %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Province</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.province %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Postal Code</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.postalCode %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">ID Postal Code</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= user.idPostalCode %></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Information -->
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Account Information</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Created At</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= new Date(user.createdAt).toLocaleDateString() %></p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Last Updated</p>
+                            <p class="text-base text-gray-900 dark:text-gray-200"><%= new Date(user.updatedAt).toLocaleDateString() %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/preline/preline.js"></script>
+    <script>
+        // Initialize Preline
+        window.addEventListener('load', function () {
+            window.HSStaticMethods.autoInit();
+        });
+    </script>
+</body>
+</html>

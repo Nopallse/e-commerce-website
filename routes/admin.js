@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { verifyToken } = require("../middleware/authMiddleware");
 const adminController = require("../controllers/Admin");
+const dashboardController = require('../controllers/dashboard');
+const {getDailyOrdersReport, getMonthlyOrdersReport,getYearlyOrdersReport} = require("../controllers/Reports");
 const multer = require("multer");
 const path = require("path");
 
@@ -34,7 +36,8 @@ const upload = multer({
 router.use(verifyToken);
 
 // Dashboard
-router.get("/dashboard", verifyToken, adminController.getDashboard);
+router.get('/dashboard', dashboardController.getDashboardData);
+router.get('/api/dashboard', dashboardController.getUpdatedDashboardData);
 
 // Product Management
 router.get("/products", adminController.getAllProducts);
@@ -46,6 +49,27 @@ router.delete("/products/:id", adminController.deleteProduct);
 
 // Order Management
 router.get("/orders", adminController.getAllOrders);
-router.put("/orders/:id/status", adminController.updateOrderStatus);
+router.get("/orders/:status", adminController.getAllOrdersByStatus);
+router.get("/order/:id", adminController.getOrderDetails);
+router.post("/order/:id/update-resi", adminController.updateResi);
+
+// Customer Management
+router.get("/customers", adminController.getAllUsers);
+router.get("/customers/:id", adminController.getUserById);
+
+
+// Report Management
+router.get("/reports/daily", getDailyOrdersReport);
+router.get("/reports/monthly", getMonthlyOrdersReport);
+router.get("/reports/yearly", getYearlyOrdersReport);
+
+// Settings
+router.get("/settings", adminController.getSettings);
+router.post("/settings", adminController.updateSettings);
+
+  
+
+
+router.put("/order/:id/status", adminController.updateOrderStatus);
 
 module.exports = router;

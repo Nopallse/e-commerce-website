@@ -98,7 +98,7 @@
                 window.snap.pay(paymentToken, {
                     onSuccess: async function (result) {
                         try {
-                            await updatePaymentStatus('paid');
+                            await updatePaymentStatus('Dikemas');
                             window.location.href = `/orders/${orderId}`;
                         } catch (error) {
                             showError("Failed to update payment status. Please contact support.");
