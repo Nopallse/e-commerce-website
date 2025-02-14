@@ -1,61 +1,117 @@
 <%- include('../layout/header') %>
 
-
-    <!-- Products Section -->
-    <section class="max-w-7xl mx-auto px-6 py-12">
-        <h2 class="text-3xl font-bold text-center mb-8">Our Products</h2>
-        
-        <!-- Products Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <% products.forEach(function(product) { %>
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                    <a href="/product/<%= product.id %>" class="block">
-                        <img src="<%= product.image %>" alt="<%= product.name %>" class="w-full h-48 object-cover hover:scale-105 transition-transform">
-                        <div class="p-4">
-                            <h3 class="text-lg font-semibold mb-2"><%= product.name %></h3>
-                            <p class="text-gray-600 text-sm mb-2 line-clamp-2"><%= product.description %></p>
-                            <div class="flex justify-between items-center">
-                                <span class="text-lg font-bold text-red-500">Rp <%= product.price.toLocaleString() %></span>
-                                <span class="text-sm text-gray-500">Stock: <%= product.stock %></span>
+<!-- Products Section -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <h2 class="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 text-gray-800">Our Products</h2>
+    
+    <!-- Products Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+        <% products.forEach(function(product) { %>
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+                <a href="/product/<%= product.id %>" class="block relative group">
+                    <div class="relative aspect-square overflow-hidden bg-gray-100">
+                        <img 
+                            src="<%= product.image %>" 
+                            alt="<%= product.name %>" 
+                            class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                            loading="lazy"
+                            onerror="this.src='/images/placeholder.jpg'"
+                        >
+                        <% if (product.stock <= 0) { %>
+                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <span class="text-white font-medium text-sm px-3 py-1 bg-red-500 rounded">Out of Stock</span>
                             </div>
+                        <% } %>
+                    </div>
+                    <div class="p-3 sm:p-4">
+                        <h3 class="text-sm sm:text-base font-semibold mb-1 text-gray-800 line-clamp-2 min-h-[2.5rem]">
+                            <%= product.name %>
+                        </h3>
+                        <p class="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2 min-h-[2.5rem]">
+                            <%= product.description %>
+                        </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm sm:text-lg font-bold text-red-500">
+                                Rp <%= product.price.toLocaleString() %>
+                            </span>
+                            <% if (product.stock > 0) { %>
+                                <span class="text-xs sm:text-sm text-gray-500">
+                                    Stock: <%= product.stock %>
+                                </span>
+                            <% } %>
                         </div>
-                    </a>
-                </div>
-            <% }); %>
-        </div>
-    </section>
+                    </div>
+                </a>
+            </div>
+        <% }); %>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="max-w-7xl mx-auto text-center">
-            <p class="text-gray-400">&copy; 2025 Kilangan Tebu Uni Des. All rights reserved.</p>
-        </div>
-    </footer>
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-6 sm:py-8">
+    <div class="max-w-7xl mx-auto text-center px-4">
+        <p class="text-gray-400 text-sm">&copy; 2025 Kilangan Tebu Uni Des. All rights reserved.</p>
+    </div>
+</footer>
 
-    <script>
-        // Add to cart functionality
-        async function addToCart(productId) {
-            try {
-                const response = await fetch('/cart/add', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ productId, quantity: 1 })
-                });
-                
-                if (response.ok) {
-                    alert('Product added to cart successfully!');
-                    location.reload();
-                } else {
-                    throw new Error('Failed to add product to cart');
-                }
-            } catch (error) {
-                alert('Error adding product to cart - ' + error.message);
-                console.error(error);
+<script>
+    // Add to cart functionality with improved error handling and feedback
+    async function addToCart(productId) {
+        const button = document.querySelector(`[data-product-id="${productId}"]`);
+        if (button) button.disabled = true;
+        
+        try {
+            const response = await fetch('/cart/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId, quantity: 1 })
+            });
+            
+            if (!response.ok) {
+                throw new Error(await response.text() || 'Failed to add product to cart');
             }
+            
+            // Show success feedback
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg text-sm';
+            toast.textContent = 'Product added to cart successfully!';
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+                location.reload();
+            }, 2000);
+            
+        } catch (error) {
+            // Show error feedback
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg text-sm';
+            toast.textContent = error.message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.remove(), 3000);
+            console.error('Error adding to cart:', error);
+        } finally {
+            if (button) button.disabled = false;
         }
+    }
 
-    </script>
+    // Lazy loading for images
+    document.addEventListener('DOMContentLoaded', function() {
+        if ('loading' in HTMLImageElement.prototype) {
+            const images = document.querySelectorAll('img[loading="lazy"]');
+            images.forEach(img => {
+                img.src = img.src;
+            });
+        } else {
+            // Fallback for browsers that don't support lazy loading
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js';
+            document.body.appendChild(script);
+        }
+    });
+</script>
 </body>
 </html>

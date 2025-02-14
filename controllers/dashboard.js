@@ -47,7 +47,6 @@ const dashboardController = {
       // Get chart data
       const statusDistribution = calculateStatusDistribution(orders);
 
-
       res.render('admin/dashboard', {
         stats,
         recentOrders,
@@ -175,12 +174,12 @@ async function getStats(dateRange, previousDateRange) {
 
   // Get customer stats
   const totalCustomers = await User.count({
-    where: { role: 'customer' }
+    where: { role: 'user' }
   });
 
   const newCustomers = await User.count({
     where: {
-      role: 'customer',
+      role: 'user',
       createdAt: {
         [Op.between]: [dateRange.start, dateRange.end]
       }
